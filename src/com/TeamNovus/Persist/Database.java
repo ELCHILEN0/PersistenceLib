@@ -82,5 +82,6 @@ public abstract class Database {
 	public abstract void loadRelationshipObjects(Object object);
 	public abstract void saveRelationshipObjects(Object object);
 	public abstract void dropRelationshipObjects(Object object);
-		
+	public abstract void dropRemovedObjects(Object object);
+
 }

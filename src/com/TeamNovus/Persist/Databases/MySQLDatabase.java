@@ -145,7 +145,7 @@ public class MySQLDatabase extends Database {
 	}
 
 	@Override
-	public void save(Object object) {		
+	public void save(Object object) {
 		try {
 			TableRegistration table = getTableRegistration(object.getClass());
 			
@@ -243,70 +243,89 @@ public class MySQLDatabase extends Database {
 		}
 
 	}
-	
-	public void dropRemovedObjects(Object object) {
+
+	@Override
+	public void drop(Object object) {
 		try {
 			TableRegistration table = getTableRegistration(object.getClass());
 
-			for(SubTableRegistration subTable : table.getSubTables()) {
-				switch (subTable.getRelationshipType()) {
-				case ONE_TO_ONE:
-					subTable.getParentField().setAccessible(true);
+			String query = String.format("DELETE FROM %s WHERE %s = ?", table.getName(), table.getId().getName());
 
-					// Load the stored data:
-					Object storedData = null;
-					
-					try {
-						storedData = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", (Integer) table.getId().getValue(object)).get(0);
-					} catch(IndexOutOfBoundsException ignored) { }
+			PreparedStatement statement = connection.prepareStatement(query);
 
-					// Load the current object data:
-					Object currentData = null;
-					
-					try {
-						currentData = subTable.getParentField().get(object);
-					} catch (Exception e) { }
-					
-					// Check if the insertion id's are the same:
-					if(storedData != null && currentData != null && !(subTable.getId().getValue(currentData).equals(subTable.getId().getValue(storedData)))) {
-						drop(storedData);
-					}
-					break;
+			statement.setObject(1, table.getId().getValue(object));
 
-				case ONE_TO_MANY:
-					subTable.getParentField().setAccessible(true);
-
-					List<?> storedChildren = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", table.getId().getValue(object));
-					List<?> currentChildren = (List<?>) subTable.getParentField().get(object);
-					
-					List<Object> toRemove = new ArrayList<Object>();
-					
-					for(Object storedObject : storedChildren) {
-						boolean remove = true;
-						
-						for(Object currentObject : currentChildren) {
-							if(subTable.getId().getValue(currentObject).equals(subTable.getId().getValue(storedObject))) {
-								remove = false;
-								break;
-							}
-						}
-						
-						if(remove)
-							toRemove.add(storedObject);
-					}
-					
-					for(Object o : toRemove) {
-						drop(o);
-					}
-					break;
-				}
-			}
+			statement.execute();
+			statement.close();
+			
+			dropRelationshipObjects(object);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		} catch (TableRegistrationException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public <T> List<T> findAll(Class<T> objectClass) {
+		try {
+			TableRegistration table = getTableRegistration(objectClass);
+
+			LinkedList<T> entries = new LinkedList<T>();
+			String query = String.format("SELECT * FROM %s", table.getName());
+
+			PreparedStatement statement = connection.prepareStatement(query);
+
+			ResultSet result = statement.executeQuery();
+
+			while(result.next()) {
+				T object = objectClass.newInstance();
+
+				for(ColumnRegistration column : table.getColumns()) {
+					column.setValue(object, result.getObject(column.getName()));
+				}
+
+				loadRelationshipObjects(object);
+
+				entries.add(object);
+			}
+
+			result.close();
+			statement.close();
+
+			return entries;
+		} catch (TableRegistrationException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}
+
+		return new LinkedList<T>();
+	}
+
+	@Override
+	public void saveAll(List<?> objects) {
+		Iterator<?> iterator = objects.iterator();
+
+		while(iterator.hasNext()) {
+			save(iterator.next());
+		}
+	}
+
+	@Override
+	public void dropAll(List<?> objects) {
+		Iterator<?> iterator = objects.iterator();
+
+		while(iterator.hasNext()) {
+			drop(iterator.next());
 		}
 	}
 
@@ -444,24 +463,65 @@ public class MySQLDatabase extends Database {
 			e.printStackTrace();
 		}
 	}
-
+	
 	@Override
-	public void drop(Object object) {
+	public void dropRemovedObjects(Object object) {
 		try {
 			TableRegistration table = getTableRegistration(object.getClass());
 
-			String query = String.format("DELETE FROM %s WHERE %s = ?", table.getName(), table.getId().getName());
+			for(SubTableRegistration subTable : table.getSubTables()) {
+				switch (subTable.getRelationshipType()) {
+				case ONE_TO_ONE:
+					subTable.getParentField().setAccessible(true);
 
-			PreparedStatement statement = connection.prepareStatement(query);
+					// Load the stored data:
+					Object storedData = null;
+					
+					try {
+						storedData = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", (Integer) table.getId().getValue(object)).get(0);
+					} catch(IndexOutOfBoundsException ignored) { }
 
-			statement.setObject(1, table.getId().getValue(object));
+					// Load the current object data:
+					Object currentData = null;
+					
+					try {
+						currentData = subTable.getParentField().get(object);
+					} catch (Exception e) { }
+					
+					// Check if the insertion id's are the same:
+					if(storedData != null && currentData != null && !(subTable.getId().getValue(currentData).equals(subTable.getId().getValue(storedData)))) {
+						drop(storedData);
+					}
+					break;
 
-			statement.execute();
-			statement.close();
-			
-			dropRelationshipObjects(object);
-		} catch (SQLException e) {
-			e.printStackTrace();
+				case ONE_TO_MANY:
+					subTable.getParentField().setAccessible(true);
+
+					List<?> storedChildren = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", table.getId().getValue(object));
+					List<?> currentChildren = (List<?>) subTable.getParentField().get(object);
+					
+					List<Object> toRemove = new ArrayList<Object>();
+					
+					for(Object storedObject : storedChildren) {
+						boolean remove = true;
+						
+						for(Object currentObject : currentChildren) {
+							if(subTable.getId().getValue(currentObject).equals(subTable.getId().getValue(storedObject))) {
+								remove = false;
+								break;
+							}
+						}
+						
+						if(remove)
+							toRemove.add(storedObject);
+					}
+					
+					for(Object o : toRemove) {
+						drop(o);
+					}
+					break;
+				}
+			}
 		} catch (TableRegistrationException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -469,65 +529,5 @@ public class MySQLDatabase extends Database {
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
-	}
-
-	@Override
-	public <T> List<T> findAll(Class<T> objectClass) {
-		try {
-			TableRegistration table = getTableRegistration(objectClass);
-
-			LinkedList<T> entries = new LinkedList<T>();
-			String query = String.format("SELECT * FROM %s", table.getName());
-
-			PreparedStatement statement = connection.prepareStatement(query);
-
-			ResultSet result = statement.executeQuery();
-
-			while(result.next()) {
-				T object = objectClass.newInstance();
-
-				for(ColumnRegistration column : table.getColumns()) {
-					column.setValue(object, result.getObject(column.getName()));
-				}
-
-				loadRelationshipObjects(object);
-
-				entries.add(object);
-			}
-
-			result.close();
-			statement.close();
-
-			return entries;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-
-		return new LinkedList<T>();
-	}
-
-	@Override
-	public void saveAll(List<?> objects) {
-		Iterator<?> iterator = objects.iterator();
-
-		while(iterator.hasNext()) {
-			save(iterator.next());
-		}
-	}
-
-	@Override
-	public void dropAll(List<?> objects) {
-		Iterator<?> iterator = objects.iterator();
-
-		while(iterator.hasNext()) {
-			drop(iterator.next());
-		}
-	}
-
+	}	
 }

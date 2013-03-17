@@ -1,4 +1,4 @@
-package com.TeamNovus.Persistence.UnitTest;
+package com.TeamNovus.Persistence.UnitTest.Models;
 
 import com.TeamNovus.Persistence.Annotations.Table;
 import com.TeamNovus.Persistence.Annotations.Columns.Column;

@@ -1,6 +1,7 @@
 package com.TeamNovus.Persistence.Databases.MySQL;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,15 +57,17 @@ public class MySQLDatabase extends Database {
 		if(column.getType().equals(Integer.class) || column.getType().equals(int.class)) {
 			return "INT";
 		} else if(column.getType().equals(String.class)) {
-			return "VARCHAR";
+			return "LONG VARCHAR";
 		} else if(column.getType().equals(Long.class) || column.getType().equals(long.class)) {
 			return "BIGINT";
 		} else if(column.getType().equals(Double.class) || column.getType().equals(double.class)) {
-			return "FLOAT";
+			return "DOUBLE";
 		} else if(column.getType().equals(Float.class) || column.getType().equals(float.class)) {
-			return "SMALLFLOAT";
+			return "FLOAT";
 		} else if(column.getType().equals(Boolean.class) || column.getType().equals(boolean.class)) {
 			return "BOOLEAN";
+		} else if(column.getType().equals(Date.class)) {
+			return "DATE";
 		}
 
 		return "";
@@ -88,7 +91,7 @@ public class MySQLDatabase extends Database {
 				String type = " " + convertToType(column);
 				String notNull = column.isNotNull() ? " NOT NULL" : "";
 				String unique =  column.isUnique() ? " UNIQUE" : "";
-				String autoIncrement = (table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT" : "");
+				String autoIncrement = (table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT PRIMARY KEY" : "");
 
 				if(i == 0) {
 					query += column.getName() + type + notNull + unique + autoIncrement;
@@ -97,8 +100,8 @@ public class MySQLDatabase extends Database {
 				}
 			}
 
-			query += String.format(", PRIMARY KEY(%s))", table.getId().getName());
-
+			query += ")";
+						
 			PreparedStatement statement = connection.prepareStatement(query);
 
 			statement.execute();
@@ -138,7 +141,6 @@ public class MySQLDatabase extends Database {
 
 						if(!(convertToType(column).equals(meta.getColumnTypeName(i)))) {
 							toChange.add(column);
-
 							break;
 						}						
 					}
@@ -170,8 +172,6 @@ public class MySQLDatabase extends Database {
 				String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
 
 				String add = String.format("ALTER TABLE %s ADD COLUMN %s" + type + notNull + unique + autoIncrement, table.getName(), column.getName());
-
-				System.out.println(add);
 
 				PreparedStatement addStatement = connection.prepareStatement(add);
 

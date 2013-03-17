@@ -1,4 +1,4 @@
-package com.TeamNovus.Persistence.UnitTest;
+package com.TeamNovus.Persistence.UnitTest.Models;
 
 import java.util.ArrayList;
 import java.util.List;

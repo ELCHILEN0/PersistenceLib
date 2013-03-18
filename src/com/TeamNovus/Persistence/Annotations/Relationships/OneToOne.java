@@ -7,4 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface OneToOne { }
+public @interface OneToOne {
+	CascadeType cascade() default CascadeType.ALL;
+}

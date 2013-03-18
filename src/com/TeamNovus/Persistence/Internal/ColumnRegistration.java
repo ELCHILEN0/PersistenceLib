@@ -25,11 +25,11 @@ public class ColumnRegistration {
 		return annotation.name();
 	}
 	
-	public Boolean isUnique() {
+	public boolean isUnique() {
 		return annotation.unique();
 	}
 	
-	public Boolean isNotNull() {
+	public boolean isNotNull() {
 		return annotation.notNull();
 	}
 	

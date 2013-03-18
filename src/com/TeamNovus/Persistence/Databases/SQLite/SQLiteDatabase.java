@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.TeamNovus.Persistence.Annotations.Relationships.CascadeType;
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Internal.ColumnRegistration;
 import com.TeamNovus.Persistence.Internal.SubTableRegistration;
@@ -455,6 +456,10 @@ public class SQLiteDatabase extends Database {
 			TableRegistration table = getTableRegistration(object.getClass());
 
 			for(SubTableRegistration subTable : table.getSubTables()) {
+				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
+					continue;
+				}
+				
 				switch (subTable.getRelationshipType()) {
 				case ONE_TO_ONE:
 					subTable.getParentField().setAccessible(true);
@@ -494,6 +499,10 @@ public class SQLiteDatabase extends Database {
 			TableRegistration table = getTableRegistration(object.getClass());
 
 			for(SubTableRegistration subTable : table.getSubTables()) {
+				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
+					continue;
+				}
+				
 				// Prepare the child for saving.
 				Object child = null;
 
@@ -542,6 +551,10 @@ public class SQLiteDatabase extends Database {
 			TableRegistration table = getTableRegistration(object.getClass());
 
 			for(SubTableRegistration subTable : table.getSubTables()) {
+				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
+					continue;
+				}
+				
 				// Prepare the child for saving.
 				Object child = null;
 
@@ -590,6 +603,10 @@ public class SQLiteDatabase extends Database {
 			TableRegistration table = getTableRegistration(object.getClass());
 
 			for(SubTableRegistration subTable : table.getSubTables()) {
+				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
+					continue;
+				}
+				
 				switch (subTable.getRelationshipType()) {
 				case ONE_TO_ONE:
 					subTable.getParentField().setAccessible(true);

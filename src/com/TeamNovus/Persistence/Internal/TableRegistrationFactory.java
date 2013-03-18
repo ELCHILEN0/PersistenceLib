@@ -6,10 +6,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import com.TeamNovus.Persistence.Annotations.Table;
+import com.TeamNovus.Persistence.Annotations.Relationships.CascadeType;
 import com.TeamNovus.Persistence.Annotations.Relationships.OneToMany;
 import com.TeamNovus.Persistence.Annotations.Relationships.OneToOne;
+import com.TeamNovus.Persistence.Annotations.Relationships.RelationshipType;
 import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
-import com.TeamNovus.Persistence.Internal.SubTableRegistration.RelationshipType;
 
 public class TableRegistrationFactory {
 	
@@ -61,11 +62,12 @@ public class TableRegistrationFactory {
 		
 		Table annotation = tableClass.getAnnotation(Table.class);
 		RelationshipType relationshipType = field.isAnnotationPresent(OneToOne.class) ? RelationshipType.ONE_TO_ONE : RelationshipType.ONE_TO_MANY;
+		CascadeType cascadeType = field.isAnnotationPresent(OneToOne.class) ? field.getAnnotation(OneToOne.class).cascade() : field.isAnnotationPresent(OneToMany.class) ? field.getAnnotation(OneToOne.class).cascade() : CascadeType.ALL;
 		ColumnRegistration id = ColumnRegistrationFactory.getIdRegistration(tableClass);
 		ColumnRegistration foreignKey = ColumnRegistrationFactory.getForeignKeyRegistration(tableClass);
 		LinkedList<ColumnRegistration> columns = ColumnRegistrationFactory.getColumnRegistrations(tableClass);
 		
-		SubTableRegistration subTableRegistration = new SubTableRegistration(annotation, tableClass, relationshipType, id, foreignKey, columns, parentTableRegistration, field);
+		SubTableRegistration subTableRegistration = new SubTableRegistration(annotation, tableClass, relationshipType, cascadeType, id, foreignKey, columns, parentTableRegistration, field);
 		subTableRegistration.setSubTables(getSubTableRegistrations(parentTableRegistration, tableClass));
 		
 		return subTableRegistration;

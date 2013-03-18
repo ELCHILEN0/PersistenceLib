@@ -8,10 +8,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Column {
-	
 	String name();
 	boolean unique() default false;
 	boolean notNull() default false;
-	int length() default 0;
-	
 }

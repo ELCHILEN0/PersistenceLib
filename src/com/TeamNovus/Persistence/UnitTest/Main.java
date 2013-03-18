@@ -1,22 +1,21 @@
 package com.TeamNovus.Persistence.UnitTest;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Databases.MySQL.MySQLConfiguration;
 import com.TeamNovus.Persistence.Databases.MySQL.MySQLDatabase;
-import com.TeamNovus.Persistence.Databases.SQLite.SQLiteConfiguration;
-import com.TeamNovus.Persistence.Databases.SQLite.SQLiteDatabase;
 import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
 import com.TeamNovus.Persistence.UnitTest.Models.Employee;
 import com.TeamNovus.Persistence.UnitTest.Models.EmployeeDailyStatistics;
 import com.TeamNovus.Persistence.UnitTest.Models.EmployeeInformation;
-import com.TeamNovus.Persistence.UnitTest.Models.SNPlayer;
 
 public class Main {
 	public static Database db;
-	public static LinkedList<Employee> employees = new LinkedList<Employee>();
+	public static List<Employee> employees = new ArrayList<Employee>();
 	
 	public static Employee getEmployee(String name) {
 		for(Employee employee : employees) {
@@ -36,8 +35,8 @@ public class Main {
 		configuration.setHost("localhost")
 						.setPort("3306")
 						.setDatabase("database")
-						.setUsername("username")
-						.setPassword("password");
+						.setUsername("root")
+						.setPassword("root");
 		
 		db = new MySQLDatabase(configuration);
 		
@@ -49,19 +48,13 @@ public class Main {
 				
 		db.connect();
 		
-		employees = (LinkedList<Employee>) db.findAll(Employee.class);
+		// Load
+		employees = db.findAll(Employee.class);
 		
-		// TODO: Database queries in here!
-		Employee jnani = getEmployee("Jnani");
-		System.out.println(jnani.getInformation().getDateOfBirth());
-		jnani.getInformation().setDateOfBirth(new Date(843192000001l));
+		// Manipulate the objects!
 		
-		Employee bob = getEmployee("bob");
-		System.out.println(bob.getInformation().getDateOfBirth());
-		
-		for(Employee employee : employees) {
-			db.save(employee);
-		}
+		// Save
+		db.saveAll(employees);
 		
 		db.disconnect();
 	}

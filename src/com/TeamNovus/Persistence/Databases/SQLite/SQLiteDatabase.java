@@ -1,6 +1,7 @@
 package com.TeamNovus.Persistence.Databases.SQLite;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,15 +55,17 @@ public class SQLiteDatabase extends Database {
 		if(column.getType().equals(Integer.class) || column.getType().equals(int.class)) {
 			return "INTEGER";
 		} else if(column.getType().equals(String.class)) {
-			return "VARCHAR";
+			return "LONG VARCHAR";
 		} else if(column.getType().equals(Long.class) || column.getType().equals(long.class)) {
 			return "BIGINT";
 		} else if(column.getType().equals(Double.class) || column.getType().equals(double.class)) {
-			return "FLOAT";
+			return "DOUBLE";
 		} else if(column.getType().equals(Float.class) || column.getType().equals(float.class)) {
-			return "SMALLFLOAT";
+			return "FLOAT";
 		} else if(column.getType().equals(Boolean.class) || column.getType().equals(boolean.class)) {
 			return "BOOLEAN";
+		} else if(column.getType().equals(Date.class)) {
+			return "DATE";
 		}
 
 		return "";

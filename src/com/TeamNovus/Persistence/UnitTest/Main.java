@@ -33,6 +33,12 @@ public class Main {
 	public static void main(String[] args) {
 		MySQLConfiguration configuration = new MySQLConfiguration();
 		
+		configuration.setHost("localhost")
+						.setPort("3306")
+						.setDatabase("database")
+						.setUsername("username")
+						.setPassword("password");
+		
 		db = new MySQLDatabase(configuration);
 		
 		try {			

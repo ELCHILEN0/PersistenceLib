@@ -1,6 +1,5 @@
 # Eclipse stuff
-/.classpath
-/.project
+
 /.settings
 
 # Potential build files

@@ -434,44 +434,18 @@ public class SQLiteDatabase extends Database {
 	@Override
 	public void saveAll(Iterable<?> objects) {
 		Iterator<?> iterator = objects.iterator();
-
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		
 		while(iterator.hasNext()) {
 			save(iterator.next());
-		}
-		
-		try {
-			connection.commit();
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void dropAll(Iterable<?> objects) {
 		Iterator<?> iterator = objects.iterator();
-
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		
 		while(iterator.hasNext()) {
 			drop(iterator.next());
-		}
-		
-		try {
-			connection.commit();
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -710,5 +684,24 @@ public class SQLiteDatabase extends Database {
 		}
 
 		return null;
+	}
+	
+	@Override
+	public void beginTransaction() {
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void endTransaction() {
+		try {
+			connection.commit();
+			connection.setAutoCommit(true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }

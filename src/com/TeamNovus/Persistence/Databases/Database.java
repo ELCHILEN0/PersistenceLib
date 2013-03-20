@@ -101,4 +101,7 @@ public abstract class Database {
 	// Custom Queries:
 	public abstract ResultSet execute(String query, Object... params);
 
+	// Transaction:
+	public abstract void beginTransaction();
+	public abstract void endTransaction();
 }

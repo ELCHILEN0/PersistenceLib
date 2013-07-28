@@ -27,7 +27,6 @@ public class SQLiteDatabase extends Database {
 		this.configuration = configuration;
 	}
 
-	@Override
 	public void connect() {
 		super.connect();
 
@@ -40,7 +39,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void disconnect() {
 		super.disconnect();
 
@@ -71,7 +69,6 @@ public class SQLiteDatabase extends Database {
 		return "";
 	}
 
-	@Override
 	public void createStructure(Class<?> objectClass) {
 		if(isDisconnected()) {
 			connect();
@@ -113,7 +110,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void updateStructure(Class<?> objectClass) {
 		if(isDisconnected()) {
 			connect();
@@ -187,7 +183,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public <T> T find(Class<T> objectClass, Integer id) {
 		if(isDisconnected()) {
 			connect();
@@ -271,7 +266,6 @@ public class SQLiteDatabase extends Database {
 		return entries;
 	}
 
-	@Override
 	public void save(Object object) {
 		if(isDisconnected()) {
 			connect();
@@ -366,7 +360,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void drop(Object object) {
 		if(isDisconnected()) {
 			connect();
@@ -390,7 +383,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public <T> List<T> findAll(Class<T> objectClass) {
 		if(isDisconnected()) {
 			connect();
@@ -431,7 +423,6 @@ public class SQLiteDatabase extends Database {
 		return new LinkedList<T>();
 	}
 
-	@Override
 	public void saveAll(Iterable<?> objects) {
 		Iterator<?> iterator = objects.iterator();
 		
@@ -440,7 +431,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void dropAll(Iterable<?> objects) {
 		Iterator<?> iterator = objects.iterator();
 		
@@ -449,7 +439,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void loadRelationshipObjects(Object object) {
 		if(isDisconnected()) {
 			connect();
@@ -492,7 +481,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void saveRelationshipObjects(Object object) {
 		if(isDisconnected()) {
 			connect();
@@ -544,7 +532,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void dropRelationshipObjects(Object object) {
 		if(isDisconnected()) {
 			connect();
@@ -596,7 +583,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 
-	@Override
 	public void dropRemovedObjects(Object object) {
 		if(isDisconnected()) {
 			connect();
@@ -665,7 +651,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}	
 
-	@Override
 	public ResultSet execute(String query, Object... params) {
 		if(isDisconnected()) {
 			connect();
@@ -686,7 +671,6 @@ public class SQLiteDatabase extends Database {
 		return null;
 	}
 	
-	@Override
 	public void beginTransaction() {
 		try {
 			connection.setAutoCommit(false);
@@ -695,7 +679,6 @@ public class SQLiteDatabase extends Database {
 		}
 	}
 	
-	@Override
 	public void endTransaction() {
 		try {
 			connection.commit();

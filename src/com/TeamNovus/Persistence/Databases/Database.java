@@ -86,6 +86,7 @@ public abstract class Database {
 	public abstract <T> List<T> findBy(Class<T> objectClass, String condition, Object... params);
 	public abstract void save(Object object);
 	public abstract void drop(Object object);
+	public abstract void persist(Object object);
 	
 	// Advanced Object Manipulation
 	public abstract <T> List<T> findAll(Class<T> objectClass);

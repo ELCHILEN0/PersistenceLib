@@ -361,6 +361,35 @@ public class MySQLDatabase extends Database {
 			e.printStackTrace();
 		}
 	}
+	
+	public void persist(Object object) {
+		if(isDisconnected()) {
+			connect();
+		}
+
+		try {
+			TableRegistration table = getTableRegistration(object.getClass());
+
+			if(table.getId().getValue(object) == null) {
+				PreparedStatement statement = connection.prepareStatement("SELECT MAX(?) FROM ?");
+
+				statement.setObject(1, table.getId().getName());
+				statement.setObject(2, table.getName());
+				
+
+				ResultSet result = statement.executeQuery();
+				
+				if (result.next()){
+					table.getId().setValue(object, result.getInt(1));
+				}
+
+				result.close();
+				statement.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void drop(Object object) {
 		if(isDisconnected()) {

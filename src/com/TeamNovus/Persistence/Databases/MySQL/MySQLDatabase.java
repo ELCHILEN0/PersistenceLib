@@ -10,15 +10,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.TeamNovus.Persistence.Annotations.Relationships.CascadeType;
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Internal.ColumnRegistration;
-import com.TeamNovus.Persistence.Internal.SubTableRegistration;
 import com.TeamNovus.Persistence.Internal.TableRegistration;
 
 public class MySQLDatabase extends Database {
@@ -110,10 +107,6 @@ public class MySQLDatabase extends Database {
 
 			statement.execute();
 			statement.close();
-
-			for(SubTableRegistration subTable : table.getSubTables()) {
-				createStructure(subTable.getTableClass());
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -211,8 +204,6 @@ public class MySQLDatabase extends Database {
 				result.close();
 				statement.close();
 
-				loadRelationshipObjects(object);
-
 				return object;
 			}
 		} catch (Exception e) {
@@ -254,8 +245,6 @@ public class MySQLDatabase extends Database {
 				for(ColumnRegistration column : table.getColumns()) {
 					column.setValue(object, result.getObject(column.getName()));
 				}
-
-				loadRelationshipObjects(object);
 
 				entries.add(object);
 			}
@@ -354,9 +343,6 @@ public class MySQLDatabase extends Database {
 				statement.execute();
 				statement.close();
 			}
-
-			saveRelationshipObjects(object);
-			dropRemovedObjects(object);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -407,8 +393,6 @@ public class MySQLDatabase extends Database {
 
 			statement.execute();
 			statement.close();
-
-			dropRelationshipObjects(object);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -437,9 +421,6 @@ public class MySQLDatabase extends Database {
 					column.setValue(object, result.getObject(column.getName()));
 				}
 
-				// Cascade Load:
-				loadRelationshipObjects(object);
-
 				entries.add(object);
 			}
 
@@ -467,218 +448,6 @@ public class MySQLDatabase extends Database {
 		
 		while(iterator.hasNext()) {
 			drop(iterator.next());
-		}
-	}
-
-	public void loadRelationshipObjects(Object object) {
-		if(isDisconnected()) {
-			connect();
-		}
-
-		try {
-			TableRegistration table = getTableRegistration(object.getClass());
-
-			for(SubTableRegistration subTable : table.getSubTables()) {
-				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
-					continue;
-				}
-				
-				switch (subTable.getRelationshipType()) {
-				case ONE_TO_ONE:
-					subTable.getParentField().setAccessible(true);
-
-					Object data = null;
-
-					try {
-						data = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", (Integer) table.getId().getValue(object)).get(0);
-					} catch(IndexOutOfBoundsException ignored) { }
-
-					if(data != null)
-						subTable.getParentField().set(object, data);
-					break;
-
-				case ONE_TO_MANY:
-					subTable.getParentField().setAccessible(true);
-
-					List<?> children = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", table.getId().getValue(object));
-
-					if(!(children.equals(null)))
-						subTable.getParentField().set(object, children);
-					break;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void saveRelationshipObjects(Object object) {
-		if(isDisconnected()) {
-			connect();
-		}
-
-		try {
-			TableRegistration table = getTableRegistration(object.getClass());
-
-			for(SubTableRegistration subTable : table.getSubTables()) {
-				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
-					continue;
-				}
-				
-				// Prepare the child for saving.
-				Object child = null;
-
-				// Prepare the field.
-				subTable.getParentField().setAccessible(true);
-
-				// Determine what type of relationship to save.
-				switch (subTable.getRelationshipType()) {
-				case ONE_TO_ONE:
-					child = subTable.getParentField().get(object);
-
-					// Update the child's foreign key
-					subTable.getForeignKey().setValue(child, table.getId().getValue(object));
-
-					save(child);
-					break;
-
-				case ONE_TO_MANY:
-					List<?> children = (List<?>) subTable.getParentField().get(object);
-
-					Iterator<?> iterator = children.iterator();
-
-					while(iterator.hasNext()) {
-						child = iterator.next();
-
-						// Update the child's foreign key
-						subTable.getForeignKey().setValue(child, table.getId().getValue(object));
-					}
-					
-					saveAll(children);
-					break;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void dropRelationshipObjects(Object object) {
-		if(isDisconnected()) {
-			connect();
-		}
-
-		try {
-			TableRegistration table = getTableRegistration(object.getClass());
-
-			for(SubTableRegistration subTable : table.getSubTables()) {
-				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
-					continue;
-				}
-				
-				// Prepare the child for saving.
-				Object child = null;
-
-				// Prepare the field.
-				subTable.getParentField().setAccessible(true);
-
-				// Determine what type of relationship to save.
-				switch (subTable.getRelationshipType()) {
-				case ONE_TO_ONE:
-					child = subTable.getParentField().get(object);
-
-					// Update the child's foreign key
-					subTable.getForeignKey().setValue(child, table.getId().getValue(object));
-
-					drop(child);				
-					break;
-
-				case ONE_TO_MANY:
-					List<?> children = (List<?>) subTable.getParentField().get(object);
-
-					Iterator<?> iterator = children.iterator();
-
-					while(iterator.hasNext()) {
-						child = iterator.next();
-
-						// Update the child's foreign key
-						subTable.getForeignKey().setValue(child, table.getId().getValue(object));
-					}
-					
-					saveAll(children);
-					break;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void dropRemovedObjects(Object object) {
-		if(isDisconnected()) {
-			connect();
-		}
-
-		try {
-			TableRegistration table = getTableRegistration(object.getClass());
-
-			for(SubTableRegistration subTable : table.getSubTables()) {
-				if(subTable.getCascadeType().equals(CascadeType.NONE)) {
-					continue;
-				}
-				
-				switch (subTable.getRelationshipType()) {
-				case ONE_TO_ONE:
-					subTable.getParentField().setAccessible(true);
-
-					// Load the stored data:
-					Object storedData = null;
-
-					try {
-						storedData = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", (Integer) table.getId().getValue(object)).get(0);
-					} catch(IndexOutOfBoundsException ignored) { }
-
-					// Load the current object data:
-					Object currentData = null;
-
-					try {
-						currentData = subTable.getParentField().get(object);
-					} catch (Exception e) { }
-
-					// Check if the insertion id's are the same:
-					if(storedData != null && currentData != null && !(subTable.getId().getValue(currentData).equals(subTable.getId().getValue(storedData)))) {
-						drop(storedData);
-					}
-					break;
-
-				case ONE_TO_MANY:
-					subTable.getParentField().setAccessible(true);
-
-					List<?> storedChildren = findBy(subTable.getTableClass(), subTable.getForeignKey().getName() + " = ?", table.getId().getValue(object));
-					List<?> currentChildren = (List<?>) subTable.getParentField().get(object);
-
-					List<Object> toRemove = new ArrayList<Object>();
-
-					for(Object storedObject : storedChildren) {
-						boolean remove = true;
-
-						for(Object currentObject : currentChildren) {
-							if(subTable.getId().getValue(currentObject).equals(subTable.getId().getValue(storedObject))) {
-								remove = false;
-								break;
-							}
-						}
-
-						if(remove)
-							toRemove.add(storedObject);
-					}
-
-					dropAll(toRemove);
-					break;
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

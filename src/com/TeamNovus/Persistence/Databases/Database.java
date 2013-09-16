@@ -93,12 +93,6 @@ public abstract class Database {
 	public abstract void saveAll(Iterable<?> objects);
 	public abstract void dropAll(Iterable<?> objects);
 	
-	// Relationship Object Manipulation
-	public abstract void loadRelationshipObjects(Object object);
-	public abstract void saveRelationshipObjects(Object object);
-	public abstract void dropRelationshipObjects(Object object);
-	public abstract void dropRemovedObjects(Object object);
-	
 	// Custom Queries:
 	public abstract ResultSet execute(String query, Object... params);
 

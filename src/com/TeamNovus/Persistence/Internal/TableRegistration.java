@@ -9,7 +9,6 @@ public class TableRegistration {
 	private Class<?> tableClass = null;
 	private ColumnRegistration id = null;
 	private LinkedList<ColumnRegistration> columns = new LinkedList<ColumnRegistration>();
-	private LinkedList<SubTableRegistration> subTables = new LinkedList<SubTableRegistration>();
 	
 	public TableRegistration(Table annotation, Class<?> tableClass, ColumnRegistration id, LinkedList<ColumnRegistration> columns) {
 		this.annotation = annotation;
@@ -36,16 +35,6 @@ public class TableRegistration {
 	
 	public LinkedList<ColumnRegistration> getColumns() {
 		return columns;
-	}
-	
-	public LinkedList<SubTableRegistration> getSubTables() {
-		return subTables;
-	}
-	
-	public TableRegistration setSubTables(LinkedList<SubTableRegistration> subTables) {
-		this.subTables = subTables;
-		
-		return this;
 	}
 	
 }

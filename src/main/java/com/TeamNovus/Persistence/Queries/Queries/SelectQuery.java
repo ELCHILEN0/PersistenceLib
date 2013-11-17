@@ -285,7 +285,6 @@ public class SelectQuery<T> extends Query<T> {
 		return new ArrayList<HashMap<String,Object>>();
 	}
 	
-	
 	// Getters
 	public LinkedHashSet<String> getColumns() {
 		return columns;

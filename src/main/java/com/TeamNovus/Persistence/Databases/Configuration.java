@@ -14,7 +14,7 @@ public abstract class Configuration {
 		return name;
 	}
 	
-	public Configuration setProperties(HashMap<String, String> properties) {
+	public Configuration set(HashMap<String, String> properties) {
 		this.properties = properties;
 		
 		return this;
@@ -24,23 +24,23 @@ public abstract class Configuration {
 		return properties;
 	}
 	
-	public Configuration setProperty(String property, String value) {
+	public Configuration set(String property, String value) {
 		properties.put(property, value);
 		
 		return this;
 	}
 	
-	public String getProperty(String property) {
+	public String get(String property) {
 		return properties.get(property);
 	}
 	
-	public Configuration removeProperty(String property) {
+	public Configuration remove(String property) {
 		properties.remove(property);
 		
 		return this;
 	}
 	
-	public boolean hasProperty(String property) {
+	public boolean has(String property) {
 		return properties.containsKey(property);
 	}
 }

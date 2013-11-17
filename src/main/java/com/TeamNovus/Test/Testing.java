@@ -24,9 +24,14 @@ public class Testing {
 		
 
 		ExampleObject t = database.find(ExampleObject.class, 23);
-		t.setHealth(t.getHealth() + 1);
-		System.out.println(database.save(t));
-		
+		System.out.println(t.getId());
+		System.out.println(t.getHunger());
+		System.out.println(t.getHealth());
+		t = database.select(ExampleObject.class).where(equal("id", 23)).filter("id", "hunger").findOne();
+		System.out.println(t.getId());
+		System.out.println(t.getHunger());
+		System.out.println(t.getHealth());
+
 	}
 
 }

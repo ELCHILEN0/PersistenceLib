@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -206,6 +207,85 @@ public class SelectQuery<T> extends Query<T> {
 		return new HashSet<T>();
 	}
 
+	public HashMap<String, Object> findMap() {
+		try {
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+
+			PreparedStatement statement = database.getProvider().prepareQuery(this);
+			ResultSet result = statement.executeQuery();
+			ResultSetMetaData meta = result.getMetaData();
+
+			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
+
+			for (int i = 1; i <= meta.getColumnCount(); i++) {
+				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+			}
+
+			if(result.first()) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+
+				for(ColumnRegistration column : table.getColumns()) {
+					if(ArrayUtils.contains(validColumns, column.getName())) {
+						map.put(column.getName(), result.getObject(column.getName()));
+					}
+				}
+
+				result.close();
+				statement.close();
+				
+				return map;
+			}
+		} catch (TableRegistrationException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return new HashMap<String, Object>();
+	}
+
+	public List<HashMap<String, Object>> findMapList() {
+		try {
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+
+			PreparedStatement statement = database.getProvider().prepareQuery(this);
+			ResultSet result = statement.executeQuery();
+			ResultSetMetaData meta = result.getMetaData();
+
+			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
+
+			for (int i = 1; i <= meta.getColumnCount(); i++) {
+				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+			}
+
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+			while(result.next()) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+
+				for(ColumnRegistration column : table.getColumns()) {
+					if(ArrayUtils.contains(validColumns, column.getName())) {
+						map.put(column.getName(), result.getObject(column.getName()));
+					}
+				}
+				
+				list.add(map);
+			}
+			
+
+			result.close();
+			statement.close();
+			
+			return list;
+		} catch (TableRegistrationException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return new ArrayList<HashMap<String,Object>>();
+	}
+	
+	
 	// Getters
 	public LinkedHashSet<String> getColumns() {
 		return columns;

@@ -3,6 +3,7 @@ package com.TeamNovus.Persistence.Queries.Queries;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -11,7 +12,7 @@ import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
 import com.TeamNovus.Persistence.Queries.Query;
 
 public class InsertQuery<T> extends Query<T> {
-	private HashMap<String, Object> map = new HashMap<String, Object>();
+	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
 	
 	public InsertQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);
@@ -40,7 +41,7 @@ public class InsertQuery<T> extends Query<T> {
 		return this;
 	}
 	
-	public InsertQuery<T> map(HashMap<String, Object> map) {
+	public InsertQuery<T> map(LinkedHashMap<String, Object> map) {
 		this.map = map;
 		
 		return this;

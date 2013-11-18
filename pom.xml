@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.TeamNovus.PersistenceLib</groupId>
 	<artifactId>PersistenceLib</artifactId>
-	<version>1.0.0</version>
 	<name>PersistenceLib</name>
+	<version>2.0.0</version>
 
 	<dependencies>
 		<dependency>
@@ -18,7 +18,6 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.6</version>
 		</dependency>
-
 	</dependencies>
 
 </project>

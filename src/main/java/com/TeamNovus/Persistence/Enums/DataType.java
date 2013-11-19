@@ -1,4 +1,4 @@
-package com.TeamNovus.Persistence.Databases.Enums;
+package com.TeamNovus.Persistence.Enums;
 
 import java.sql.Date;
 import java.sql.Time;

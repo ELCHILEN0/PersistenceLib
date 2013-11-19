@@ -1,6 +1,6 @@
 package com.TeamNovus.Persistence.Queries.Expression;
 
-import com.TeamNovus.Persistence.Databases.Enums.Junction;
+import com.TeamNovus.Persistence.Enums.Junction;
 
 public abstract class Condition {
 	// Reference to the expression

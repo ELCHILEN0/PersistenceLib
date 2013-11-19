@@ -1,6 +1,6 @@
 package com.TeamNovus.Persistence.Queries.Expression.Conditions;
 
-import com.TeamNovus.Persistence.Databases.Enums.Comparator;
+import com.TeamNovus.Persistence.Enums.Comparator;
 import com.TeamNovus.Persistence.Queries.Expression.Condition;
 import com.TeamNovus.Persistence.Queries.Expression.Expression;
 

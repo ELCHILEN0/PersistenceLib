@@ -14,10 +14,10 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.TeamNovus.Persistence.Databases.Configuration;
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Databases.Provider;
-import com.TeamNovus.Persistence.Databases.TableRegistry;
-import com.TeamNovus.Persistence.Databases.Enums.DataType;
+import com.TeamNovus.Persistence.Enums.DataType;
 import com.TeamNovus.Persistence.Internal.ColumnRegistration;
 import com.TeamNovus.Persistence.Internal.TableRegistration;
+import com.TeamNovus.Persistence.Internal.TableRegistrationFactory;
 import com.TeamNovus.Persistence.Queries.Queries.DeleteQuery;
 import com.TeamNovus.Persistence.Queries.Queries.InsertQuery;
 import com.TeamNovus.Persistence.Queries.Queries.SelectQuery;
@@ -70,7 +70,7 @@ public class MySQLDatabase extends Database {
 		}
 
 		try {
-			TableRegistration table = TableRegistry.getInstance().getTableRegistration(objectClass);
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			String query = String.format("CREATE TABLE IF NOT EXISTS %s (", table.getName());
 
@@ -107,7 +107,7 @@ public class MySQLDatabase extends Database {
 		}
 
 		try {
-			TableRegistration table = TableRegistry.getInstance().getTableRegistration(objectClass);
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			String query = String.format("SELECT * FROM %s LIMIT 1", table.getName());
 			PreparedStatement statement = connection.prepareStatement(query);
@@ -170,7 +170,7 @@ public class MySQLDatabase extends Database {
 	
 	public <T> T find(Class<T> objectClass, int id) {
 		try {
-			TableRegistration table = TableRegistry.getInstance().getTableRegistration(objectClass);
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), id));
 			
@@ -184,7 +184,7 @@ public class MySQLDatabase extends Database {
 
 	public <T> T find(Class<T> objectClass, long id) {
 		try {
-			TableRegistration table = TableRegistry.getInstance().getTableRegistration(objectClass);
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), table.getId().getValue(id)));
 			
@@ -202,7 +202,7 @@ public class MySQLDatabase extends Database {
 		}
 		
 		try {			
-			TableRegistration table = TableRegistry.getInstance().getTableRegistration(object.getClass());
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
 
 			String[] columns = ArrayUtils.EMPTY_STRING_ARRAY;
 			Object[] values = ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -240,7 +240,7 @@ public class MySQLDatabase extends Database {
 		}
 		
 		try {
-			TableRegistration table = TableRegistry.getInstance().getTableRegistration(object.getClass());
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
 
 			@SuppressWarnings("unchecked")
 			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(equal(table.getId().getName(), table.getId().getValue(object)));

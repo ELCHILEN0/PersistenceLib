@@ -8,10 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Databases.Provider;
-import com.TeamNovus.Persistence.Databases.Enums.Comparator;
-import com.TeamNovus.Persistence.Databases.Enums.DataType;
-import com.TeamNovus.Persistence.Databases.Enums.Junction;
-import com.TeamNovus.Persistence.Databases.Enums.Order;
+import com.TeamNovus.Persistence.Enums.Comparator;
+import com.TeamNovus.Persistence.Enums.DataType;
+import com.TeamNovus.Persistence.Enums.Junction;
+import com.TeamNovus.Persistence.Enums.Order;
 import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
 import com.TeamNovus.Persistence.Internal.TableRegistration;
 import com.TeamNovus.Persistence.Internal.TableRegistrationFactory;

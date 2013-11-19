@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
-import com.TeamNovus.Persistence.Databases.Enums.Order;
+import com.TeamNovus.Persistence.Enums.Order;
 import com.TeamNovus.Persistence.Queries.Clause;
 
 public class OrderByClause extends Clause {

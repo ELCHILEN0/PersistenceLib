@@ -2,7 +2,7 @@ package com.TeamNovus.Persistence.Queries.Expression;
 
 import java.util.LinkedList;
 
-import com.TeamNovus.Persistence.Databases.Enums.Comparator;
+import com.TeamNovus.Persistence.Enums.Comparator;
 import com.TeamNovus.Persistence.Queries.Expression.Conditions.BinaryCondition;
 import com.TeamNovus.Persistence.Queries.Expression.Conditions.RawCondition;
 

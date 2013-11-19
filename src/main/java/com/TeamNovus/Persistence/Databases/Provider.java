@@ -3,9 +3,9 @@ package com.TeamNovus.Persistence.Databases;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import com.TeamNovus.Persistence.Databases.Enums.Comparator;
-import com.TeamNovus.Persistence.Databases.Enums.DataType;
-import com.TeamNovus.Persistence.Databases.Enums.Order;
+import com.TeamNovus.Persistence.Enums.Comparator;
+import com.TeamNovus.Persistence.Enums.DataType;
+import com.TeamNovus.Persistence.Enums.Order;
 import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
 import com.TeamNovus.Persistence.Queries.Query;
 

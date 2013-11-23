@@ -1,6 +1,7 @@
 package com.TeamNovus.Persistence.Queries.Queries;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -13,7 +14,8 @@ import com.TeamNovus.Persistence.Queries.Query;
 
 public class InsertQuery<T> extends Query<T> {
 	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-	
+	private ResultSet generatedKeys;
+
 	public InsertQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);
 	}
@@ -52,6 +54,9 @@ public class InsertQuery<T> extends Query<T> {
 			PreparedStatement statement = database.getProvider().prepareQuery(this);
 			
 			statement.executeUpdate();
+			
+			generatedKeys = statement.getGeneratedKeys();
+			
 			statement.close();
 			
 			return true;
@@ -80,5 +85,9 @@ public class InsertQuery<T> extends Query<T> {
 	
 	public Object[] getValues() {
 		return map.values().toArray();
+	}
+	
+	public ResultSet getGeneratedKeys() {
+		return generatedKeys;
 	}
 }

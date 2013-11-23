@@ -1,6 +1,7 @@
 package com.TeamNovus.Persistence.Queries.Queries;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -16,6 +17,8 @@ import com.TeamNovus.Persistence.Queries.Expression.Condition;
 public class UpdateQuery<T> extends Query<T> {
 	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
 	protected WhereClause where;
+	
+	private ResultSet generatedKeys;
 
 	public UpdateQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);
@@ -72,6 +75,26 @@ public class UpdateQuery<T> extends Query<T> {
 		return false;
 	}
 	
+	public ResultSet executeQuery() {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(this);
+			
+			ResultSet result = statement.executeQuery();
+			
+			generatedKeys = statement.getGeneratedKeys();
+			
+			statement.close();
+			
+			return result;
+		} catch (TableRegistrationException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
 	public HashMap<String, Object> getMap() {
 		return map;
 	}
@@ -92,5 +115,9 @@ public class UpdateQuery<T> extends Query<T> {
 	
 	public WhereClause getWhere() {
 		return where;
+	}
+	
+	public ResultSet getGeneratedKeys() {
+		return generatedKeys;
 	}
 }

@@ -27,5 +27,5 @@ public class Query<T> {
 	
 	public Class<T> getObjectClass() {
 		return objectClass;
-	}
+	}	
 }

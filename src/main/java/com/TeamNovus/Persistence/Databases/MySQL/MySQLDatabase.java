@@ -2,6 +2,7 @@ package com.TeamNovus.Persistence.Databases.MySQL;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.TeamNovus.Persistence.Databases.Configuration;
 import com.TeamNovus.Persistence.Databases.Database;
-import com.TeamNovus.Persistence.Databases.Provider;
 import com.TeamNovus.Persistence.Enums.DataType;
 import com.TeamNovus.Persistence.Internal.ColumnRegistration;
 import com.TeamNovus.Persistence.Internal.TableRegistration;
@@ -27,14 +27,11 @@ import static com.TeamNovus.Persistence.Queries.Expression.Expressions.*;
 
 public class MySQLDatabase extends Database {
 	
-	public MySQLDatabase(Configuration configuration, Provider provider) throws InstantiationException {
-		super(configuration, provider);
+	public MySQLDatabase(Configuration configuration) throws InstantiationException {
+		super(configuration, new MySQLProvider());
 		
 		if (!(configuration instanceof MySQLConfiguration))
 			throw new InstantiationException("Configuration is not a MySQLConfiguration object.");
-		
-		if (!(provider instanceof MySQLProvider))
-			throw new InstantiationException("Provider is not a MySQLProvider object.");
 	}
 
 	public void connect() {
@@ -215,18 +212,42 @@ public class MySQLDatabase extends Database {
 					values = ArrayUtils.add(values, column.getValue(object));
 				}
 			}
-									
+				
+			boolean success = false;
+			ResultSet generatedKeys = null;
+			
 			if(table.getId().getValue(object) == null) {
 				@SuppressWarnings("unchecked")
 				InsertQuery<T> query = insert((Class<T>) object.getClass()).columns(columns).values(values);
 				
-				return query.execute();
+				success = query.execute();
+				generatedKeys = query.getGeneratedKeys();
 			} else {
 				@SuppressWarnings("unchecked")
 				UpdateQuery<T> query = update((Class<T>) object.getClass()).columns(columns).values(values).where(equal(table.getId().getName(), table.getId().getValue(object)));
 			
-				return query.execute();
+				success = query.execute();
+				generatedKeys = query.getGeneratedKeys();
 			}
+			
+			ResultSetMetaData meta = generatedKeys.getMetaData();
+
+			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
+			for (int i = 1; i <= meta.getColumnCount(); i++) {
+				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+			}
+			
+			if(generatedKeys.first()) {
+				for(ColumnRegistration column : table.getColumns()) {
+					if(ArrayUtils.contains(validColumns, column.getName())) {
+						column.setValue(object, generatedKeys.getObject(column.getName()));
+					}
+				}
+
+				generatedKeys.close();				
+			}
+			
+			return success;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

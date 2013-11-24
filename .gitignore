@@ -1,9 +1,12 @@
-# Eclipse stuff
+# Eclipse
 /.classpath
 /.project
 /.settings
 
-# Potential build files
+# IntelliJ IDE
+/.idea
+
+# Build Filesystems
 /build
 /bin
 /dist

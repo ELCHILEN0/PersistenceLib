@@ -51,14 +51,11 @@ public class InsertQuery<T> extends Query<T> {
 	
 	public boolean execute() {		
 		try {
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
-			
-			statement.executeUpdate();
-			
-			generatedKeys = statement.getGeneratedKeys();
-			
-			statement.close();
-			
+            PreparedStatement statement = database.getProvider().prepareQuery(this);
+
+            statement.executeUpdate();
+            generatedKeys = statement.getGeneratedKeys();
+
 			return true;
 		} catch (TableRegistrationException e) {
 			e.printStackTrace();

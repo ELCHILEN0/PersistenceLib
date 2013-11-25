@@ -60,11 +60,11 @@ public class UpdateQuery<T> extends Query<T> {
 	
 	public boolean execute() {		
 		try {
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
-			
-			statement.executeUpdate();
-			statement.close();
-			
+            PreparedStatement statement = database.getProvider().prepareQuery(this);
+
+            statement.execute();
+            generatedKeys = statement.getGeneratedKeys();
+
 			return true;
 		} catch (TableRegistrationException e) {
 			e.printStackTrace();
@@ -73,26 +73,6 @@ public class UpdateQuery<T> extends Query<T> {
 		}
 		
 		return false;
-	}
-	
-	public ResultSet executeQuery() {
-		try {
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
-			
-			ResultSet result = statement.executeQuery();
-			
-			generatedKeys = statement.getGeneratedKeys();
-			
-			statement.close();
-			
-			return result;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 	
 	public HashMap<String, Object> getMap() {

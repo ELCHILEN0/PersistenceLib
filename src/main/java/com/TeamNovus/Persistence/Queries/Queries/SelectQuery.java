@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.TeamNovus.Persistence.Enums.Order;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.TeamNovus.Persistence.Databases.Database;
@@ -58,6 +59,12 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
+    public SelectQuery<T> groupBy(String... columns) {
+        groupBy = new GroupByClause(columns);
+
+        return this;
+    }
+
 	public SelectQuery<T> where(Condition condition) {
 		where = new WhereClause(condition);
 
@@ -69,6 +76,12 @@ public class SelectQuery<T> extends Query<T> {
 
 		return this;
 	}
+
+    public SelectQuery<T> orderBy(Order order, String... columns) {
+        orderBy = new OrderByClause(order, columns);
+
+        return this;
+    }
 
 	public SelectQuery<T> filter(String... columns) {
 		this.columns.addAll(Arrays.asList(columns));

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
@@ -83,7 +83,7 @@ public class UpdateQuery<T> extends Query<T> {
 		String[] columns = ArrayUtils.EMPTY_STRING_ARRAY;
 		
 		for (String column : map.keySet()) {
-			columns = ArrayUtils.add(columns, column);
+			columns = (String[]) ArrayUtils.add(columns, column);
 		}
 		
 		return columns;

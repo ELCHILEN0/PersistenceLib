@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 
 import com.TeamNovus.Persistence.Databases.Configuration;
 import com.TeamNovus.Persistence.Databases.Database;
@@ -45,7 +45,7 @@ public class MySQLDatabase extends Database {
 
 			connection = DriverManager.getConnection(url, configuration.get("username"), configuration.get("password"));	
 			
-			super.connect();
+			super.connect();			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -208,7 +208,7 @@ public class MySQLDatabase extends Database {
 				ColumnRegistration column = table.getColumns().get(i);
 				
 				if(!(table.getId().getName().equals(column.getName()))) {
-					columns = ArrayUtils.add(columns, column.getName());
+					columns = (String[]) ArrayUtils.add(columns, column.getName());
 					values = ArrayUtils.add(values, column.getValue(object));
 				}
 			}
@@ -230,21 +230,23 @@ public class MySQLDatabase extends Database {
 				generatedKeys = query.getGeneratedKeys();
 			}
 			
-			ResultSetMetaData meta = generatedKeys.getMetaData();
-
-			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
-			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
-			}
-			
-			if(generatedKeys.first()) {
-				for(ColumnRegistration column : table.getColumns()) {
-					if(ArrayUtils.contains(validColumns, column.getName())) {
-						column.setValue(object, generatedKeys.getObject(column.getName()));
-					}
+			if(generatedKeys != null) {
+				ResultSetMetaData meta = generatedKeys.getMetaData();
+	
+				String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
+				for (int i = 1; i <= meta.getColumnCount(); i++) {
+					validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 				}
-
-				generatedKeys.close();				
+				
+				if(generatedKeys.first()) {
+					for(ColumnRegistration column : table.getColumns()) {
+						if(ArrayUtils.contains(validColumns, column.getName())) {
+							column.setValue(object, generatedKeys.getObject(column.getName()));
+						}
+					}
+	
+					generatedKeys.close();				
+				}
 			}
 			
 			return success;

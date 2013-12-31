@@ -3,8 +3,8 @@ package com.TeamNovus.Persistence.Databases.MySQL;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Databases.Provider;
@@ -29,6 +29,7 @@ import com.TeamNovus.Persistence.Queries.Queries.DeleteQuery;
 import com.TeamNovus.Persistence.Queries.Queries.InsertQuery;
 import com.TeamNovus.Persistence.Queries.Queries.SelectQuery;
 import com.TeamNovus.Persistence.Queries.Queries.UpdateQuery;
+import com.mysql.jdbc.Statement;
 
 public class MySQLProvider extends Provider {
 		
@@ -181,14 +182,18 @@ public class MySQLProvider extends Provider {
 			sql = sql.replace("{ COLUMNS }", StringUtils.join(query.getColumns(), ", "));
 			sql = sql.replace("{ VALUES }", StringUtils.join(query.getColumns(), ", ").replaceAll("[^\\s*,]+", "?"));
 					
-			System.out.println(sql);
+			if(database.isLogging())
+				System.out.println(sql);
 			
-			PreparedStatement statement = database.getConnection().prepareStatement(sql);
+			PreparedStatement statement = database.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
 			
 			for (int i = 1; i <= objects.length; i++) {
+				if(database.isLogging())
+					System.out.println(objects[i-1]);
+				
 				statement.setObject(i, objects[i - 1]);
 			}
 			
@@ -201,16 +206,19 @@ public class MySQLProvider extends Provider {
 			sql = sql.replace("{ COLUMNS_AND_VALUES }", StringUtils.join(query.getColumns(), " = ?, ") + " = ?");
 			sql = sql.replace("{ WHERE }", clauseSQL(query.getWhere()));
 								
-			System.out.println(sql);
+			if(database.isLogging())
+				System.out.println(sql);
 			
-			PreparedStatement statement = database.getConnection().prepareStatement(sql);
+			PreparedStatement statement = database.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
 						
 			for (int i = 1; i <= objects.length; i++) {
-				System.out.println(objects[i-1]);
+				if(database.isLogging())
+					System.out.println(objects[i-1]);
+				
 				statement.setObject(i, objects[i - 1]);
 			}
 			
@@ -222,12 +230,18 @@ public class MySQLProvider extends Provider {
 			sql = sql.replace("{ TABLE }", table.getName());
 			sql = sql.replace("{ WHERE }", clauseSQL(query.getWhere()));
 			
+			if(database.isLogging())
+				System.out.println(sql);
+			
 			PreparedStatement statement = database.getConnection().prepareStatement(sql);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
 			
 			for (int i = 1; i <= objects.length; i++) {
+				if(database.isLogging())
+					System.out.println(objects[i-1]);
+				
 				statement.setObject(i, objects[i - 1]);
 			}
 			
@@ -250,6 +264,9 @@ public class MySQLProvider extends Provider {
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
 			
 			for (int i = 1; i <= objects.length; i++) {
+				if(database.isLogging())
+					System.out.println(objects[i-1]);
+				
 				statement.setObject(i, objects[i - 1]);
 			}
 			

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.TeamNovus.Persistence.Enums.Order;
-import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang.ArrayUtils;
 
 import com.TeamNovus.Persistence.Databases.Database;
 import com.TeamNovus.Persistence.Exceptions.TableRegistrationException;
@@ -100,7 +100,7 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[])  ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
 			if(result.first()) {
@@ -141,7 +141,7 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[])  ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
 			LinkedList<T> objects = new LinkedList<T>();
@@ -186,7 +186,7 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
 			LinkedHashSet<T> objects = new LinkedHashSet<T>();
@@ -231,7 +231,7 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
 			if(result.first()) {
@@ -268,7 +268,7 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
 			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();

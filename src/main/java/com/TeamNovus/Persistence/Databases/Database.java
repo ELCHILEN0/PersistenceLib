@@ -14,6 +14,7 @@ public abstract class Database {
 	protected Connection connection;
 	
 	private boolean connected = false;
+	private boolean logging = false;
 	
 	public Database(Configuration configuration, Provider provider) {
 		this.configuration = configuration;
@@ -46,6 +47,18 @@ public abstract class Database {
 	
 	public boolean isDisconnected() {
 		return !(connected);
+	}
+	
+	public void enableLogging() {
+		logging = true;
+	}
+	
+	public void disableLogging() {
+		logging = false;
+	}
+	
+	public boolean isLogging() {
+		return logging;
 	}
 	
 	// Database Creation/Modification:

@@ -230,22 +230,11 @@ public class MySQLDatabase extends Database {
 				generatedKeys = query.getGeneratedKeys();
 			}
 			
-			if(generatedKeys != null) {
-				ResultSetMetaData meta = generatedKeys.getMetaData();
-	
-				String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
-				for (int i = 1; i <= meta.getColumnCount(); i++) {
-					validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
-				}
-				
-				if(generatedKeys.first()) {
-					for(ColumnRegistration column : table.getColumns()) {
-						if(ArrayUtils.contains(validColumns, column.getName())) {
-							column.setValue(object, generatedKeys.getObject(column.getName()));
-						}
-					}
-	
-					generatedKeys.close();				
+			if(generatedKeys != null && generatedKeys.next()) {
+				if(table.getId().getType() == Integer.class || table.getId().getType() == int.class) {
+					table.getId().setValue(object, generatedKeys.getInt(1));
+				} else {
+					table.getId().setValue(object, generatedKeys.getObject(1));
 				}
 			}
 			

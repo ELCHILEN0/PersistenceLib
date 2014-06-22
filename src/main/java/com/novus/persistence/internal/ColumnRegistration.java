@@ -29,8 +29,12 @@ public class ColumnRegistration {
 		return annotation.unique();
 	}
 	
-	public boolean isNotNull() {
-		return annotation.notNull();
+	public boolean isNullable() {
+		return annotation.nullable();
+	}
+	
+	public int length() {
+		return annotation.length();
 	}
 	
 	public Object getValue(Object o) throws IllegalArgumentException, IllegalAccessException {

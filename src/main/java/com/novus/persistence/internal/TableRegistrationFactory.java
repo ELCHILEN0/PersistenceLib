@@ -8,7 +8,6 @@ import com.novus.persistence.exceptions.TableRegistrationException;
 public class TableRegistrationFactory {
 	
 	public static TableRegistration getTableRegistration(Class<?> tableClass) throws TableRegistrationException {
-		
 		// Check if the Table annotation is present
 		if(!(tableClass.isAnnotationPresent(Table.class))) {
 			throw new TableRegistrationException("Class '" + tableClass.getCanonicalName() + "' does not have a Table annotation present.");

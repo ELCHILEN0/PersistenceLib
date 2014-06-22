@@ -29,7 +29,7 @@ public class MySQLDatabase extends Database {
 	
 	public MySQLDatabase(Configuration configuration) throws InstantiationException {
 		super(configuration, new MySQLProvider());
-		
+
 		if (!(configuration instanceof MySQLConfiguration))
 			throw new InstantiationException("Configuration is not a MySQLConfiguration object.");
 	}
@@ -44,8 +44,6 @@ public class MySQLDatabase extends Database {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 
 			connection = DriverManager.getConnection(url, configuration.get("username"), configuration.get("password"));	
-			
-			super.connect();			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -54,18 +52,14 @@ public class MySQLDatabase extends Database {
 	public void disconnect() {
 		try {
 			connection.close();
-			
-			super.disconnect();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		connection = null;
 	}
 	
 	public void createStructure(Class<?> objectClass) {
-		if(isDisconnected()) {
-			connect();
-		}
-
 		try {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
@@ -76,7 +70,7 @@ public class MySQLDatabase extends Database {
 
 				// Build the column parameters:
 				String type = " " + provider.getDataType(DataType.getDataType(column.getType()));
-				String notNull = column.isNotNull() ? " NOT NULL" : "";
+				String notNull = column.isNullable() ? " NOT NULL" : "";
 				String unique =  column.isUnique() ? " UNIQUE" : "";
 				String autoIncrement = (table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT PRIMARY KEY" : "");
 
@@ -99,10 +93,6 @@ public class MySQLDatabase extends Database {
 	}
 
 	public void updateStructure(Class<?> objectClass) {
-		if(isDisconnected()) {
-			connect();
-		}
-
 		try {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
@@ -137,7 +127,7 @@ public class MySQLDatabase extends Database {
 
 			for(ColumnRegistration column : toChange) {
 				String type = " " + provider.getDataType(DataType.getDataType(column.getType()));
-				String notNull = column.isNotNull() ? " NOT NULL" : "";
+				String notNull = column.isNullable() ? " NOT NULL" : "";
 				String unique =  column.isUnique() ? " UNIQUE" : "";
 				String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
 
@@ -149,7 +139,7 @@ public class MySQLDatabase extends Database {
 
 			for(ColumnRegistration column : toAdd) {
 				String type = " " + provider.getDataType(DataType.getDataType(column.getType()));
-				String notNull = column.isNotNull() ? " NOT NULL" : "";
+				String notNull = column.isNullable() ? " NOT NULL" : "";
 				String unique =  column.isUnique() ? " UNIQUE" : "";
 				String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
 
@@ -194,10 +184,6 @@ public class MySQLDatabase extends Database {
 	}
 	
 	public <T> boolean save(T object) {
-		if(isDisconnected()) {
-			connect();
-		}
-		
 		try {			
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
 
@@ -246,11 +232,7 @@ public class MySQLDatabase extends Database {
 		return false;
 	}
 
-	public <T> boolean drop(T object) {
-		if(isDisconnected()) {
-			connect();
-		}
-		
+	public <T> boolean drop(T object) {		
 		try {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
 
@@ -266,10 +248,6 @@ public class MySQLDatabase extends Database {
 	}
 
 	public <T> List<T> findAll(Class<T> objectClass) {
-		if(isDisconnected()) {
-			connect();
-		}
-
 		try {
 			SelectQuery<T> query = select(objectClass);
 			

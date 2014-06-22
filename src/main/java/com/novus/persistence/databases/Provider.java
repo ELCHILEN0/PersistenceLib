@@ -12,25 +12,25 @@ import com.novus.persistence.queries.Query;
 public abstract class Provider {
 	
 	/**
-	 * Returns the query of a given @QueryType including the specific clause fields to be bound at runtime.
+	 * Returns the query of a given {@link QueryType} including the specific clause fields to be bound at runtime.
 	 * 
-	 * @param type
+	 * @param	type
 	 * @return
 	 */
 	public abstract <T> PreparedStatement prepareQuery(Query<T> q) throws TableRegistrationException, SQLException;
 	
 	/**
-	 * Returns the order of a given @Order specific to the type of database.
+	 * Returns the order of a given {@link Order} specific to the type of database.
 	 * 
-	 * @param order
+	 * @param	order
 	 * @return
 	 */
 	public abstract String getOrder(Order order);
 	
 	/**
-	 * Returns the comparator of a given @Comparator specific to type type of database.
+	 * Returns the comparator of a given {@link Comparator} specific to type type of database.
 	 * 
-	 * @param comparator
+	 * @param	comparator
 	 * @return
 	 */
 	public abstract String getComparator(Comparator comparator);
@@ -38,7 +38,7 @@ public abstract class Provider {
 	/**
 	 * Returns the data type of a given @DataType specific to the type the database.
 	 * 
-	 * @param type
+	 * @param	type
 	 * @return
 	 */
 	public abstract String getDataType(DataType type);

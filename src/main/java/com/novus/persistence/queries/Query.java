@@ -15,7 +15,7 @@ public class Query<T> {
 	 * Allows dynamic runtime changing of the database.  This enables a query to be reused with
 	 * multiple database instances.
 	 * 
-	 * @param database
+	 * @param	database
 	 */
 	public void setDatabase(Database database) {
 		this.database = database;

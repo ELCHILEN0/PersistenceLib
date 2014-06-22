@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -283,12 +284,38 @@ public class MySQLDatabase extends Database {
 		}
 	}
 	
-	public void endTransaction() {
+	public void commitTransaction() {
 		try {
 			connection.commit();
 			connection.setAutoCommit(true);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void rollbackTransaction() {
+		try {
+			connection.rollback();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void rollbackTransaction(Savepoint savepoint) {
+		try {
+			connection.rollback(savepoint);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Savepoint setSavepoint() {
+		try {
+			return connection.setSavepoint();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

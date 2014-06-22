@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.regex.Pattern;
 
 import com.novus.persistence.annotations.columns.Column;
-import com.novus.persistence.annotations.columns.ForeignKey;
 import com.novus.persistence.annotations.columns.Id;
 import com.novus.persistence.exceptions.ColumnRegistrationException;
 
@@ -57,21 +56,4 @@ public class ColumnRegistrationFactory {
 		return null;
 	}
 	
-	public static ColumnRegistration getForeignKeyRegistration(Class<?> clazz) {
-		// Iterate through every field stopping at the first ForeignKey annotation
-		for(Field field : clazz.getDeclaredFields()) {
-			ColumnRegistration columnRegistration = null;
-			
-			try {
-				columnRegistration = getColumnRegistration(field);
-			} catch (ColumnRegistrationException ignored) { }
-			
-			// Check to see if it satisfies both requirements
-			if(field.isAnnotationPresent(ForeignKey.class) && columnRegistration != null) {
-				return columnRegistration;
-			}
-		}
-		
-		return null;
-	}
 }

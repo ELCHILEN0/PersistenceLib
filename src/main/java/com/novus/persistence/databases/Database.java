@@ -10,6 +10,29 @@ import com.novus.persistence.queries.queries.InsertQuery;
 import com.novus.persistence.queries.queries.SelectQuery;
 import com.novus.persistence.queries.queries.UpdateQuery;
 
+/**
+ * Provides a layer for interacting with a database without writing code
+ * specific to each type of database.
+ * <p>
+ * Supports select, insert, update and delete queries on tables in the database
+ * through a fluid Java syntax. Each Database has a single a Configuration and
+ * single a Provider. The purpose of the Configuration is to handle database
+ * specific details which should be passed to establish connection and
+ * additional variables specific to the particular type of database. The purpose
+ * of the Provider is to provide built queries specific to the particular type
+ * of database.
+ * <p>
+ * This class is designed to be extended for different databases so that the
+ * database specific code can be implemented behind the Java layer.  Extending the class should be done in the following steps:
+ * <ol>
+ * <li>Redefine {@link #Database(Configuration, Provider)} to only require the Configuration object.</li>
+ * <li>Redefine {@link #connect()} to correctly establish a connection to a database.<li>
+ * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection from the database.
+ * </ol>
+ * 
+ * @author Jnani
+ * @since 1.0.0
+ */
 public abstract class Database {
 	protected Configuration configuration;
 	protected Provider provider;
@@ -317,8 +340,7 @@ public abstract class Database {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	/**
 	 * @deprecated Replaced by {@link #begin()}
 	 * @since 2.0.6
@@ -327,7 +349,7 @@ public abstract class Database {
 	public void beginTransaction() {
 		begin();
 	}
-	
+
 	/**
 	 * Ends the current transaction and commits the changes to the database.
 	 */
@@ -339,8 +361,7 @@ public abstract class Database {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	/**
 	 * @deprecated Replaced by {@link #commit()}
 	 * @since 2.0.6
@@ -360,7 +381,7 @@ public abstract class Database {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Undoes all the changes made past the savepoint in the current
 	 * transaction.
@@ -375,7 +396,7 @@ public abstract class Database {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Returns a new Savepoint at the current position in the current
 	 * transaction.
@@ -388,7 +409,7 @@ public abstract class Database {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
 }

@@ -313,12 +313,20 @@ public abstract class Database {
 	public abstract void begin();
 
 	/**
+	 * @deprecated Replaced by {@link #begin()}
+	 */
+	@Deprecated
+	public void beginTransaction() {
+		begin();
+	}
+	
+	/**
 	 * Ends the current transaction and commits the changes to the database.
 	 */
 	public abstract void commit();
 
 	/**
-	 * @deprecated Replaced by {@link #commitTransaction()}
+	 * @deprecated Replaced by {@link #commit()}
 	 */
 	@Deprecated
 	public void endTransaction() {

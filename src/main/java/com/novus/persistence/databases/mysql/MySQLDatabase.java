@@ -276,7 +276,7 @@ public class MySQLDatabase extends Database {
 		}
 	}
 
-	public void beginTransaction() {
+	public void begin() {
 		try {
 			connection.setAutoCommit(false);
 		} catch (SQLException e) {
@@ -284,7 +284,7 @@ public class MySQLDatabase extends Database {
 		}
 	}
 	
-	public void commitTransaction() {
+	public void commit() {
 		try {
 			connection.commit();
 			connection.setAutoCommit(true);
@@ -293,7 +293,7 @@ public class MySQLDatabase extends Database {
 		}
 	}
 	
-	public void rollbackTransaction() {
+	public void rollback() {
 		try {
 			connection.rollback();
 		} catch (SQLException e) {
@@ -301,7 +301,7 @@ public class MySQLDatabase extends Database {
 		}
 	}
 	
-	public void rollbackTransaction(Savepoint savepoint) {
+	public void rollback(Savepoint savepoint) {
 		try {
 			connection.rollback(savepoint);
 		} catch (SQLException e) {

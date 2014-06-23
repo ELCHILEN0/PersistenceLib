@@ -4,6 +4,12 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+/**
+ * Provides mappings from SQL data types to the corresponding Java data types.
+ * 
+ * @author Jnani Weibel
+ * @since 1.0.0
+ */
 public enum DataType {
 	INT(Integer.class, int.class),
 	LONG(Long.class, long.class),

@@ -12,7 +12,7 @@ import com.novus.persistence.queries.expression.conditions.RawCondition;
  * 
  * The methods should be statically imported with: import static Predicate.*;
  * 
- * @author Jnani
+ * @author Jnani Weibel
  *
  */
 public class Expression  {

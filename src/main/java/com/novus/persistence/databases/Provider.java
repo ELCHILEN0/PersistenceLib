@@ -30,7 +30,7 @@ import com.novus.persistence.queries.Query;
  * type for the database type.</li>
  * </ol>
  * 
- * @author Jnani
+ * @author Jnani Weibel
  * @see Database
  * @since 1.0.0
  */

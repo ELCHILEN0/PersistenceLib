@@ -17,7 +17,7 @@ import java.util.HashMap;
  * <li>Redefine {@link #Configuration()} to include the required properties.</li>
  * </ol>
  * 
- * @author Jnani
+ * @author Jnani Weibel
  * @see Database
  * @since 1.0.0
  */

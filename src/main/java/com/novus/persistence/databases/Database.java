@@ -49,7 +49,7 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * table structure in the database.</li>
  * </ol>
  * 
- * @author Jnani
+ * @author Jnani Weibel
  * @see Configuration
  * @see Provider
  * @since 1.0.0

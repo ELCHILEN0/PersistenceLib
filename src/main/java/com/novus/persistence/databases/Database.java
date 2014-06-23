@@ -1,10 +1,20 @@
 package com.novus.persistence.databases;
 
+import static com.novus.persistence.queries.expression.Expressions.equal;
+
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
+import com.novus.persistence.internal.ColumnRegistration;
+import com.novus.persistence.internal.TableRegistration;
+import com.novus.persistence.internal.TableRegistrationFactory;
 import com.novus.persistence.queries.queries.DeleteQuery;
 import com.novus.persistence.queries.queries.InsertQuery;
 import com.novus.persistence.queries.queries.SelectQuery;
@@ -27,10 +37,14 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * <ol>
  * <li>Redefine {@link #Database(Configuration, Provider)} to only require the Configuration object.</li>
  * <li>Redefine {@link #connect()} to correctly establish a connection to a database.<li>
- * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection from the database.
+ * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection from the database.</li>
+ * <li>Redefine the {@link #createTableStructure(Class)} to correctly creates in the database.</li>
+ * <li>Redefine the {@link #updateTableStructure(Class)} to correctly update table structure in the database.</li>
  * </ol>
  * 
  * @author Jnani
+ * @see Configuration
+ * @see Provider
  * @since 1.0.0
  */
 public abstract class Database {
@@ -180,7 +194,19 @@ public abstract class Database {
 	 *            the id of the object
 	 * @return the object with the given id or <code>null</code>
 	 */
-	public abstract <T> T find(Class<T> objectClass, int id);
+	public <T> T find(Class<T> objectClass, int id) {
+		try {
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+
+			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), id));
+			
+			return query.findOne();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		return null;
+	}
 
 	/**
 	 * Returns a single object from the database with the given id or
@@ -192,8 +218,20 @@ public abstract class Database {
 	 *            the id of the object
 	 * @return the object with the given id or <code>null</code>
 	 */
-	public abstract <T> T find(Class<T> objectClass, long id);
+	public <T> T find(Class<T> objectClass, long id) {
+		try {
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
+			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), table.getId().getValue(id)));
+			
+			return query.findOne();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+		return null;
+	}
+	
 	/**
 	 * Saves the object to the appropriate table in the database.
 	 * <p>
@@ -205,7 +243,54 @@ public abstract class Database {
 	 * @return <code>true</code> if the save was successful; <code>false</code>
 	 *         otherwise.
 	 */
-	public abstract <T> boolean save(T object);
+	public <T> boolean save(T object) {
+		try {			
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
+
+			String[] columns = ArrayUtils.EMPTY_STRING_ARRAY;
+			Object[] values = ArrayUtils.EMPTY_OBJECT_ARRAY;
+			
+			for (int i = 0; i < table.getColumns().size(); i++) {
+				ColumnRegistration column = table.getColumns().get(i);
+				
+				if(!(table.getId().getName().equals(column.getName()))) {
+					columns = (String[]) ArrayUtils.add(columns, column.getName());
+					values = ArrayUtils.add(values, column.getValue(object));
+				}
+			}
+				
+			boolean success = false;
+			ResultSet generatedKeys = null;
+			
+			if(table.getId().getValue(object) == null) {
+				@SuppressWarnings("unchecked")
+				InsertQuery<T> query = insert((Class<T>) object.getClass()).columns(columns).values(values);
+				
+				success = query.execute();
+				generatedKeys = query.getGeneratedKeys();
+			} else {
+				@SuppressWarnings("unchecked")
+				UpdateQuery<T> query = update((Class<T>) object.getClass()).columns(columns).values(values).where(equal(table.getId().getName(), table.getId().getValue(object)));
+			
+				success = query.execute();
+				generatedKeys = query.getGeneratedKeys();
+			}
+			
+			if(generatedKeys != null && generatedKeys.next()) {
+				if(table.getId().getType() == Integer.class || table.getId().getType() == int.class) {
+					table.getId().setValue(object, generatedKeys.getInt(1));
+				} else {
+					table.getId().setValue(object, generatedKeys.getObject(1));
+				}
+			}
+			
+			return success;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Deletes the object from the appropriate table in the database.
@@ -215,7 +300,20 @@ public abstract class Database {
 	 * @return <code>true</code> if the drop was successful; <code>false</code>
 	 *         otherwise.
 	 */
-	public abstract <T> boolean drop(T object);
+	public <T> boolean drop(T object) {		
+		try {
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
+
+			@SuppressWarnings("unchecked")
+			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(equal(table.getId().getName(), table.getId().getValue(object)));
+			
+			return query.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Returns all the objects in the appropriate table in the database.
@@ -224,7 +322,17 @@ public abstract class Database {
 	 *            the class of the object that will be returned
 	 * @return all the objects in the table
 	 */
-	public abstract <T> List<T> findAll(Class<T> objectClass);
+	public <T> List<T> findAll(Class<T> objectClass) {
+		try {
+			SelectQuery<T> query = select(objectClass);
+			
+			return query.findList();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return new ArrayList<T>();
+	}
 
 	/**
 	 * Saves multiple objects to their appropriate tables in the database.
@@ -235,7 +343,13 @@ public abstract class Database {
 	 * @param objects
 	 *            the objects to save
 	 */
-	public abstract void saveAll(Iterable<?> objects);
+	public void saveAll(Iterable<?> objects) {
+		Iterator<?> iterator = objects.iterator();
+		
+		while(iterator.hasNext()) {
+			save(iterator.next());
+		}
+	}
 
 	/**
 	 * Drops multiple objects from their appropriate tables in the database.
@@ -246,8 +360,14 @@ public abstract class Database {
 	 * @param objects
 	 *            the objects to drop
 	 */
-	public abstract void dropAll(Iterable<?> objects);
-
+	public void dropAll(Iterable<?> objects) {
+		Iterator<?> iterator = objects.iterator();
+		
+		while(iterator.hasNext()) {
+			drop(iterator.next());
+		}
+	}
+	
 	/**
 	 * Creates a {@link SelectQuery} that can be used to build a select
 	 * statement to query the appropriate table in the database. The SelectQuery

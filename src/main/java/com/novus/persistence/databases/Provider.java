@@ -9,39 +9,69 @@ import com.novus.persistence.enums.Order;
 import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.queries.Query;
 
+/**
+ * Provides a Provider class used for creating the appropriate database specific
+ * queries.
+ * <p>
+ * Converts queries built through fluid Java code into raw code specific to the
+ * database in which it is specified to interact with.
+ * <p>
+ * This class is designed to be extended for different database types so the
+ * correct queries can be provided to the connection. Extending the class should
+ * be done in the following steps:
+ * <ol>
+ * <li>Redefine {@link #prepareQuery(Query)} to return an appropriate
+ * PreparedStatement for the database type.</li>
+ * <li>Redefine {@link #getOrder(Order)} to return the appropriate order for the
+ * database type.</li>
+ * <li>Redefine {@link #getComparator(Comparator)} to return the appropriate
+ * comparator for the database type.</li>
+ * <li>Redefine {@link #getDataType(DataType)} to return the appropriate data
+ * type for the database type.</li>
+ * </ol>
+ * 
+ * @author Jnani
+ * @see Database
+ * @since 1.0.0
+ */
 public abstract class Provider {
-	
+
 	/**
-	 * Returns the query of a given {@link QueryType} including the specific clause fields to be bound at runtime.
+	 * Returns a prepared statement based on the composition of the query.
+	 * <p>
+	 * Converts the fluid Java code into raw database specific code to be sent
+	 * to the connection for execution.
 	 * 
-	 * @param	type
-	 * @return
+	 * @param q the query
+	 * @return a prepared statement based or <code>null</code> if the query was unable to be processed
+	 * @throws TableRegistrationException if the class associated with the query cannot be registered
+	 * @throws SQLException if an SQL error occurred
 	 */
-	public abstract <T> PreparedStatement prepareQuery(Query<T> q) throws TableRegistrationException, SQLException;
-	
+	public abstract <T> PreparedStatement prepareQuery(Query<T> q)
+			throws TableRegistrationException, SQLException;
+
 	/**
-	 * Returns the order of a given {@link Order} specific to the type of database.
+	 * Returns a string representation of the order for a database type.
 	 * 
-	 * @param	order
-	 * @return
+	 * @param order the order
+	 * @return the string form of the order
 	 */
 	public abstract String getOrder(Order order);
-	
+
 	/**
-	 * Returns the comparator of a given {@link Comparator} specific to type type of database.
+	 * Returns a string representation of the comparator for a database type.
 	 * 
-	 * @param	comparator
-	 * @return
+	 * @param comparator the comparator
+	 * @return the string form of the comparator
 	 */
 	public abstract String getComparator(Comparator comparator);
-	
+
 	/**
-	 * Returns the data type of a given @DataType specific to the type the database.
+	 * The string representation of the data type for a database type.
 	 * 
-	 * @param	type
-	 * @return
+	 * @param type the data type
+	 * @return the string form of the data type
 	 */
 	public abstract String getDataType(DataType type);
-	
-	
+
 }

@@ -5,8 +5,6 @@ import com.novus.persistence.databases.Configuration;
 public class MySQLConfiguration extends Configuration {
 
 	public MySQLConfiguration(String host, String port, String database, String username, String password) {
-		super("mysql");
-
 		set("host", host);
 		set("port", port);
 		set("database", database);

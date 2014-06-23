@@ -2,15 +2,9 @@ package com.novus.persistence.databases.mysql;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.ArrayUtils;
 
 import com.novus.persistence.databases.Configuration;
 import com.novus.persistence.databases.Database;
@@ -18,12 +12,6 @@ import com.novus.persistence.enums.DataType;
 import com.novus.persistence.internal.ColumnRegistration;
 import com.novus.persistence.internal.TableRegistration;
 import com.novus.persistence.internal.TableRegistrationFactory;
-import com.novus.persistence.queries.queries.DeleteQuery;
-import com.novus.persistence.queries.queries.InsertQuery;
-import com.novus.persistence.queries.queries.SelectQuery;
-import com.novus.persistence.queries.queries.UpdateQuery;
-
-import static com.novus.persistence.queries.expression.Expressions.*;
 
 public class MySQLDatabase extends Database {
 	

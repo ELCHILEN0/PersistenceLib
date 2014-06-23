@@ -168,10 +168,6 @@ public class MySQLProvider extends Provider {
 	public <T> PreparedStatement prepareQuery(Query<T> q) throws TableRegistrationException, SQLException {
 		Database database = q.getDatabase();
 		
-		if(database.isDisconnected()) {
-			database.connect();
-		}
-		
 		TableRegistration table = TableRegistrationFactory.getTableRegistration(q.getObjectClass());
 				
 		if(q instanceof InsertQuery<?>) {

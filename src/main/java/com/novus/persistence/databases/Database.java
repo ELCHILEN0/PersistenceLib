@@ -33,13 +33,20 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * of database.
  * <p>
  * This class is designed to be extended for different databases so that the
- * database specific code can be implemented behind the Java layer.  Extending the class should be done in the following steps:
+ * database specific code can be implemented behind the Java layer. Extending
+ * the class should be done in the following steps:
  * <ol>
- * <li>Redefine {@link #Database(Configuration, Provider)} to only require the Configuration object.</li>
- * <li>Redefine {@link #connect()} to correctly establish a connection to a database.<li>
- * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection from the database.</li>
- * <li>Redefine the {@link #createTableStructure(Class)} to correctly creates in the database.</li>
- * <li>Redefine the {@link #updateTableStructure(Class)} to correctly update table structure in the database.</li>
+ * <li>Redefine {@link #Database(Configuration, Provider)} to only require the
+ * Configuration object.</li>
+ * <li>Redefine {@link #connect()} to correctly establish a connection to a
+ * database.
+ * <li>
+ * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection
+ * from the database.</li>
+ * <li>Redefine the {@link #createTableStructure(Class)} to correctly creates in
+ * the database.</li>
+ * <li>Redefine the {@link #updateTableStructure(Class)} to correctly update
+ * table structure in the database.</li>
  * </ol>
  * 
  * @author Jnani

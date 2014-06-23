@@ -310,10 +310,18 @@ public abstract class Database {
 	/**
 	 * Begins a transaction for queries on the database connection.
 	 */
-	public abstract void begin();
-
+	public void begin() {
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
 	 * @deprecated Replaced by {@link #begin()}
+	 * @since 2.0.6
 	 */
 	@Deprecated
 	public void beginTransaction() {
@@ -323,10 +331,19 @@ public abstract class Database {
 	/**
 	 * Ends the current transaction and commits the changes to the database.
 	 */
-	public abstract void commit();
-
+	public void commit() {
+		try {
+			connection.commit();
+			connection.setAutoCommit(true);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
 	 * @deprecated Replaced by {@link #commit()}
+	 * @since 2.0.6
 	 */
 	@Deprecated
 	public void endTransaction() {
@@ -336,8 +353,14 @@ public abstract class Database {
 	/**
 	 * Undoes all the changes made in the current transaction.
 	 */
-	public abstract void rollback();
-
+	public void rollback() {
+		try {
+			connection.rollback();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Undoes all the changes made past the savepoint in the current
 	 * transaction.
@@ -345,13 +368,27 @@ public abstract class Database {
 	 * @param savepoint
 	 *            the savepoint
 	 */
-	public abstract void rollback(Savepoint savepoint);
-
+	public void rollback(Savepoint savepoint) {
+		try {
+			connection.rollback(savepoint);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * Returns a new Savepoint at the current position in the current
 	 * transaction.
 	 * 
 	 * @return the current savepoint
 	 */
-	public abstract Savepoint setSavepoint();
+	public Savepoint setSavepoint() {
+		try {
+			return connection.setSavepoint();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }

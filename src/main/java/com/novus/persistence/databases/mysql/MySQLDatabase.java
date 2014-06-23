@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -274,48 +273,5 @@ public class MySQLDatabase extends Database {
 		while(iterator.hasNext()) {
 			drop(iterator.next());
 		}
-	}
-
-	public void begin() {
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void commit() {
-		try {
-			connection.commit();
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void rollback() {
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void rollback(Savepoint savepoint) {
-		try {
-			connection.rollback(savepoint);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public Savepoint setSavepoint() {
-		try {
-			return connection.setSavepoint();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
 	}
 }

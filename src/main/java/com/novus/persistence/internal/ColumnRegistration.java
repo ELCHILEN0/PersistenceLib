@@ -2,7 +2,7 @@ package com.novus.persistence.internal;
 
 import java.lang.reflect.Field;
 
-import com.novus.persistence.annotations.columns.Column;
+import com.novus.persistence.annotations.Column;
 
 public class ColumnRegistration {
 	private Field	field		= null;
@@ -33,7 +33,7 @@ public class ColumnRegistration {
 		return annotation.nullable();
 	}
 
-	public int length() {
+	public int getLength() {
 		return annotation.length();
 	}
 

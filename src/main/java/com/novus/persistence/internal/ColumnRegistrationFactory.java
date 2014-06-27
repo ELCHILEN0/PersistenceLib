@@ -10,8 +10,7 @@ import com.novus.persistence.exceptions.ColumnRegistrationException;
 
 public class ColumnRegistrationFactory {
 
-	public static ColumnRegistration getColumnRegistration(Field field)
-			throws ColumnRegistrationException {
+	public static ColumnRegistration getColumnRegistration(Field field) throws ColumnRegistrationException {
 		// Check to make sure that the Column annotation is present
 		if (!(field.isAnnotationPresent(Column.class))) {
 			throw new ColumnRegistrationException("Class '" + field.getClass().getCanonicalName() + "' does not have a Column annotation present.");
@@ -28,8 +27,7 @@ public class ColumnRegistrationFactory {
 		return new ColumnRegistration(field, field.getAnnotation(Column.class));
 	}
 
-	public static LinkedList<ColumnRegistration> getColumnRegistrations(
-			Class<?> clazz) {
+	public static LinkedList<ColumnRegistration> getColumnRegistrations(Class<?> clazz) {
 		LinkedList<ColumnRegistration> columns = new LinkedList<ColumnRegistration>();
 
 		for (Field field : clazz.getDeclaredFields()) {

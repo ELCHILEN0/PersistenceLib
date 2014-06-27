@@ -4,13 +4,13 @@ import com.novus.persistence.enums.Junction;
 
 public abstract class Condition {
 	// Reference to the expression
-	private Expression	expression;
+	private final Expression	expression;
 
 	// Check if the condition is negated.
-	private boolean		negated	= false;
+	private boolean				negated	= false;
 
 	// The junction that follows the condition.
-	private Junction	junction;
+	private Junction			junction;
 
 	public Condition(Expression expression) {
 		this.expression = expression;

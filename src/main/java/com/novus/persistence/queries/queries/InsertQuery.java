@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import org.apache.commons.lang.ArrayUtils;
 
 import com.novus.persistence.databases.Database;
-import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.queries.Query;
 
 public class InsertQuery<T> extends Query<T> {

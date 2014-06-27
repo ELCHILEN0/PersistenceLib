@@ -4,8 +4,8 @@ import com.novus.persistence.queries.expression.Condition;
 import com.novus.persistence.queries.expression.Expression;
 
 public class RawCondition extends Condition {
-	private String		sql;
-	private Object[]	params;
+	private final String	sql;
+	private final Object[]	params;
 
 	public RawCondition(Expression expression, String sql, Object[] params) {
 		super(expression);

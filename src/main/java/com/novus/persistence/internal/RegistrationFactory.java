@@ -6,9 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import com.novus.persistence.annotations.Column;
+import com.novus.persistence.annotations.Id;
 import com.novus.persistence.annotations.Table;
-import com.novus.persistence.annotations.columns.Column;
-import com.novus.persistence.annotations.columns.Id;
 import com.novus.persistence.exceptions.ColumnRegistrationException;
 import com.novus.persistence.exceptions.TableRegistrationException;
 

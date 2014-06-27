@@ -1,6 +1,6 @@
 package com.novus.persistence.databases;
 
-import static com.novus.persistence.queries.expression.Expressions.*;
+import static com.novus.persistence.queries.expression.Expressions.equal;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -36,7 +36,7 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * the class should be done in the following steps:
  * <ol>
  * <li>Redefine {@link #Database(DataSource, Provider)} to only require the
- * Configuration object.</li>
+ * DataSource object.</li>
  * <li>Redefine {@link #connect()} to correctly establish a connection to a
  * database.
  * <li>
@@ -61,7 +61,7 @@ public abstract class Database {
 
 	/**
 	 * Constructs a new {@link Database} object with the specified
-	 * {@link Configuration} and {@link Provider}.
+	 * {@link DataSource} and {@link Provider}.
 	 * 
 	 * @param configuration
 	 *            the configuration provides connection details to the Database
@@ -227,8 +227,8 @@ public abstract class Database {
 				generatedKeys = query.getGeneratedKeys();
 			}
 
-			if (generatedKeys != null && generatedKeys.next()) {
-				if (table.getId().getType() == Integer.class || table.getId().getType() == int.class) {
+			if ((generatedKeys != null) && generatedKeys.next()) {
+				if ((table.getId().getType() == Integer.class) || (table.getId().getType() == int.class)) {
 					table.getId().setValue(object, generatedKeys.getInt(1));
 				} else {
 					table.getId().setValue(object, generatedKeys.getObject(1));

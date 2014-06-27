@@ -14,13 +14,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.novus.persistence.enums.Order;
-import com.novus.persistence.exceptions.ColumnRegistrationException;
-import com.novus.persistence.exceptions.TableRegistrationException;
-
 import org.apache.commons.lang.ArrayUtils;
 
 import com.novus.persistence.databases.Database;
+import com.novus.persistence.enums.Order;
+import com.novus.persistence.exceptions.ColumnRegistrationException;
+import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.internal.ColumnRegistration;
 import com.novus.persistence.internal.RegistrationFactory;
 import com.novus.persistence.internal.TableRegistration;
@@ -33,12 +32,12 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
 
 public class SelectQuery<T> extends Query<T> {
-	private LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
-	private WhereClause				where;
-	private GroupByClause			groupBy;
-	private HavingClause			having;
-	private OrderByClause			orderBy;
-	private LimitClause				limit;
+	private final LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
+	private WhereClause					where;
+	private GroupByClause				groupBy;
+	private HavingClause				having;
+	private OrderByClause				orderBy;
+	private LimitClause					limit;
 
 	public SelectQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);

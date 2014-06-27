@@ -5,9 +5,9 @@ import com.novus.persistence.queries.expression.Condition;
 import com.novus.persistence.queries.expression.Expression;
 
 public class BinaryCondition extends Condition {
-	private String		column;
-	private Object		value;
-	private Comparator	comparator;
+	private final String		column;
+	private final Object		value;
+	private final Comparator	comparator;
 
 	public BinaryCondition(Expression expression, String column, Object value, Comparator comparator) {
 		super(expression);

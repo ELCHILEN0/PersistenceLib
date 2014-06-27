@@ -22,6 +22,7 @@ public class MySQLDatabase extends Database {
 		super(source, new MySQLProvider());
 	}
 
+	@Override
 	public void createStructure(Connection connection, Class<?> objectClass) throws SQLException {
 		TableRegistration table = null;
 		try {
@@ -36,7 +37,7 @@ public class MySQLDatabase extends Database {
 			ColumnRegistration column = table.getColumns().get(i);
 
 			// Build the column parameters:
-			String type = " " + provider.getDataType(DataType.getDataType(column.getType()));
+			String type = " " + provider.getDataType(column.getLength(), DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT PRIMARY KEY" : "");
@@ -55,6 +56,7 @@ public class MySQLDatabase extends Database {
 		}
 	}
 
+	@Override
 	public void updateStructure(Connection connection, Class<?> objectClass) throws SQLException {
 		TableRegistration table = null;
 		try {
@@ -78,7 +80,7 @@ public class MySQLDatabase extends Database {
 					if (column.getName().equals(meta.getColumnName(i))) {
 						found = true;
 
-						if (!(provider.getDataType(DataType.getDataType(column.getType())).equals(meta.getColumnTypeName(i)))) {
+						if (!(provider.getDataType(column.getLength(), DataType.getDataType(column.getType())).equals(meta.getColumnTypeName(i)))) {
 							toChange.add(column);
 							break;
 						}
@@ -94,7 +96,7 @@ public class MySQLDatabase extends Database {
 		}
 
 		for (ColumnRegistration column : toChange) {
-			String type = " " + provider.getDataType(DataType.getDataType(column.getType()));
+			String type = " " + provider.getDataType(column.getLength(), DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
@@ -106,7 +108,7 @@ public class MySQLDatabase extends Database {
 		}
 
 		for (ColumnRegistration column : toAdd) {
-			String type = " " + provider.getDataType(DataType.getDataType(column.getType()));
+			String type = " " + provider.getDataType(column.getLength(), DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");

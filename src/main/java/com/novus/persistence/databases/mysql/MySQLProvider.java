@@ -3,6 +3,7 @@ package com.novus.persistence.databases.mysql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -189,7 +190,7 @@ public class MySQLProvider implements Provider {
 				System.out.println(sql);
 			}
 
-			PreparedStatement statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());

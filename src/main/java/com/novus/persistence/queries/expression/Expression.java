@@ -7,9 +7,8 @@ import com.novus.persistence.queries.expression.conditions.BinaryCondition;
 import com.novus.persistence.queries.expression.conditions.RawCondition;
 
 /**
- * This class consists of an assortment of static initializers to quickly create
- * Predicates without the use of the new keyword. The methods should be
- * statically imported with: import static Predicate.*;
+ * Provides an expression builder that allows the chaining of multiple
+ * conditions and expressions to develop complex queries.
  * 
  * @author Jnani Weibel
  */

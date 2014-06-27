@@ -1,4 +1,4 @@
-package com.novus.persistence.annotations.columns;
+package com.novus.persistence.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -58,8 +58,11 @@ public @interface Column {
 
 	/**
 	 * Returns the length of the column.
+	 * <p>
+	 * A length of <code>-1</code> signifies that the length is not set. Any
+	 * other positive integer will specify the length of the column.
 	 * 
 	 * @return the length
 	 */
-	int length() default 255;
+	int length() default -1;
 }

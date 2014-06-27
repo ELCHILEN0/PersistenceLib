@@ -1,4 +1,4 @@
-package com.novus.persistence.annotations.columns;
+package com.novus.persistence.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,5 +1,6 @@
 package com.novus.persistence.queries.queries;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -58,9 +59,9 @@ public class UpdateQuery<T> extends Query<T> {
 		return this;
 	}
 	
-	public boolean execute() {		
+	public boolean execute(Connection connection) {		
 		try {
-            PreparedStatement statement = database.getProvider().prepareQuery(this);
+            PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 
             statement.execute();
             generatedKeys = statement.getGeneratedKeys();

@@ -1,5 +1,6 @@
 package com.novus.persistence.queries.queries;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -89,11 +90,10 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public T findOne() {
-		try {
+	public T findOne(Connection connection) {
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
 
@@ -130,11 +130,10 @@ public class SelectQuery<T> extends Query<T> {
 		return null;
 	}
 
-	public List<T> findList() {
-		try {
+	public List<T> findList(Connection connection) {
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
 
@@ -175,11 +174,10 @@ public class SelectQuery<T> extends Query<T> {
 		return new ArrayList<T>();
 	}
 
-	public Set<T> findSet() {
-		try {
+	public Set<T> findSet(Connection connection) {
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
 
@@ -220,11 +218,10 @@ public class SelectQuery<T> extends Query<T> {
 		return new HashSet<T>();
 	}
 
-	public HashMap<String, Object> findMap() {
-		try {
+	public HashMap<String, Object> findMap(Connection connection) {
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
 
@@ -242,9 +239,6 @@ public class SelectQuery<T> extends Query<T> {
 						map.put(column.getName(), result.getObject(column.getName()));
 					}
 				}
-
-				result.close();
-				statement.close();
 				
 				return map;
 			}
@@ -257,11 +251,10 @@ public class SelectQuery<T> extends Query<T> {
 		return new HashMap<String, Object>();
 	}
 
-	public List<HashMap<String, Object>> findMapList() {
-		try {
+	public List<HashMap<String, Object>> findMapList(Connection connection) {
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
 
@@ -283,11 +276,7 @@ public class SelectQuery<T> extends Query<T> {
 				
 				list.add(map);
 			}
-			
-
-			result.close();
-			statement.close();
-			
+						
 			return list;
 		} catch (TableRegistrationException e) {
 			e.printStackTrace();

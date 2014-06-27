@@ -1,5 +1,6 @@
 package com.novus.persistence.databases.mysql;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -31,7 +32,7 @@ import com.novus.persistence.queries.queries.SelectQuery;
 import com.novus.persistence.queries.queries.UpdateQuery;
 import com.mysql.jdbc.Statement;
 
-public class MySQLProvider extends Provider {
+public class MySQLProvider implements Provider {
 		
 	private String clauseSQL(Clause c) {
 		if(c instanceof WhereClause) {
@@ -165,7 +166,7 @@ public class MySQLProvider extends Provider {
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}
 	
-	public <T> PreparedStatement prepareQuery(Query<T> q) throws TableRegistrationException, SQLException {
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws TableRegistrationException, SQLException {
 		Database database = q.getDatabase();
 		
 		TableRegistration table = TableRegistrationFactory.getTableRegistration(q.getObjectClass());
@@ -181,7 +182,7 @@ public class MySQLProvider extends Provider {
 			if(database.isLogging())
 				System.out.println(sql);
 			
-			PreparedStatement statement = database.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
@@ -205,7 +206,7 @@ public class MySQLProvider extends Provider {
 			if(database.isLogging())
 				System.out.println(sql);
 			
-			PreparedStatement statement = database.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
@@ -229,7 +230,7 @@ public class MySQLProvider extends Provider {
 			if(database.isLogging())
 				System.out.println(sql);
 			
-			PreparedStatement statement = database.getConnection().prepareStatement(sql);
+			PreparedStatement statement = connection.prepareStatement(sql);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
@@ -254,7 +255,7 @@ public class MySQLProvider extends Provider {
 			sql = sql.replace("{ ORDER_BY }", clauseSQL(query.getOrderBy()));
 			sql = sql.replace("{ LIMIT }", clauseSQL(query.getLimit()));
 
-			PreparedStatement statement = database.getConnection().prepareStatement(sql);
+			PreparedStatement statement = connection.prepareStatement(sql);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));

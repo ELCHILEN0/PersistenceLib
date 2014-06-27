@@ -1,5 +1,6 @@
 package com.novus.persistence.queries.queries;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -23,9 +24,8 @@ public class DeleteQuery<T> extends Query<T> {
 		return this;
 	}
 	
-	public boolean execute() {		
-		try {
-			PreparedStatement statement = database.getProvider().prepareQuery(this);
+	public boolean execute(Connection connection) {		
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			
 			statement.executeUpdate();
 			statement.close();

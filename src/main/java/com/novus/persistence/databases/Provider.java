@@ -1,5 +1,6 @@
 package com.novus.persistence.databases;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -34,7 +35,7 @@ import com.novus.persistence.queries.Query;
  * @see Database
  * @since 1.0.0
  */
-public abstract class Provider {
+public interface Provider {
 
 	/**
 	 * Returns a prepared statement based on the composition of the query.
@@ -42,36 +43,43 @@ public abstract class Provider {
 	 * Converts the fluid Java code into raw database specific code to be sent
 	 * to the connection for execution.
 	 * 
-	 * @param q the query
-	 * @return a prepared statement based or <code>null</code> if the query was unable to be processed
-	 * @throws TableRegistrationException if the class associated with the query cannot be registered
-	 * @throws SQLException if an SQL error occurred
+	 * @param q
+	 *            the query
+	 * @return a prepared statement based or <code>null</code> if the query was
+	 *         unable to be processed
+	 * @throws TableRegistrationException
+	 *             if the class associated with the query cannot be registered
+	 * @throws SQLException
+	 *             if an SQL error occurred
 	 */
-	public abstract <T> PreparedStatement prepareQuery(Query<T> q)
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q)
 			throws TableRegistrationException, SQLException;
 
 	/**
 	 * Returns a string representation of the order for a database type.
 	 * 
-	 * @param order the order
+	 * @param order
+	 *            the order
 	 * @return the string form of the order
 	 */
-	public abstract String getOrder(Order order);
+	public String getOrder(Order order);
 
 	/**
 	 * Returns a string representation of the comparator for a database type.
 	 * 
-	 * @param comparator the comparator
+	 * @param comparator
+	 *            the comparator
 	 * @return the string form of the comparator
 	 */
-	public abstract String getComparator(Comparator comparator);
+	public String getComparator(Comparator comparator);
 
 	/**
 	 * The string representation of the data type for a database type.
 	 * 
-	 * @param type the data type
+	 * @param type
+	 *            the data type
 	 * @return the string form of the data type
 	 */
-	public abstract String getDataType(DataType type);
+	public String getDataType(DataType type);
 
 }

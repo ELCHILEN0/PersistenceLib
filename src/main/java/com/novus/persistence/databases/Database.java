@@ -5,10 +5,11 @@ import static com.novus.persistence.queries.expression.Expressions.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -25,18 +26,16 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * specific to each type of database.
  * <p>
  * Supports select, insert, update and delete queries on tables in the database
- * through a fluid Java syntax. Each Database has a single a Configuration and
- * single a Provider. The purpose of the Configuration is to handle database
- * specific details which should be passed to establish connection and
- * additional variables specific to the particular type of database. The purpose
- * of the Provider is to provide built queries specific to the particular type
- * of database.
+ * through a fluid Java syntax. Each Database contains a DataSource and a
+ * Provider. The DataSource provides connections to a database.The purpose of
+ * the Provider is to provide built queries specific to the particular type of
+ * database.
  * <p>
  * This class is designed to be extended for different databases so that the
  * database specific code can be implemented behind the Java layer. Extending
  * the class should be done in the following steps:
  * <ol>
- * <li>Redefine {@link #Database(Configuration, Provider)} to only require the
+ * <li>Redefine {@link #Database(DataSource, Provider)} to only require the
  * Configuration object.</li>
  * <li>Redefine {@link #connect()} to correctly establish a connection to a
  * database.
@@ -50,15 +49,13 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * </ol>
  * 
  * @author Jnani Weibel
- * @see Configuration
+ * @see DataSource
  * @see Provider
  * @since 1.0.0
  */
 public abstract class Database {
-	protected Configuration configuration;
+	protected DataSource source;
 	protected Provider provider;
-	// TODO: Change to a connection pool
-	protected Connection connection;
 
 	private boolean logging = false;
 
@@ -72,18 +69,28 @@ public abstract class Database {
 	 *            the provider dictates which queries to execute in different
 	 *            situations for the Database
 	 */
-	public Database(Configuration configuration, Provider provider) {
-		this.configuration = configuration;
+	protected Database(DataSource source, Provider provider) {
+		this.source = source;
 		this.provider = provider;
 	}
 
 	/**
-	 * Returns the {@link Configuration} for the {@link Database}.
+	 * Returns the {@link DataSource} for the {@link #Database}
 	 * 
-	 * @return the configuration
+	 * @return the source
 	 */
-	public Configuration getConfiguration() {
-		return configuration;
+	public DataSource getDataSource() {
+		return source;
+	}
+
+	/**
+	 * Returns a connection from the {@link DataSource}.
+	 * 
+	 * @return a connection
+	 * @throws SQLException
+	 */
+	public Connection getConnection() throws SQLException {
+		return source.getConnection();
 	}
 
 	/**
@@ -93,72 +100,6 @@ public abstract class Database {
 	 */
 	public Provider getProvider() {
 		return provider;
-	}
-
-	/**
-	 * Returns the Java {@link Connection} to the database.
-	 * 
-	 * @return the connection
-	 */
-	public Connection getConnection() {
-		return connection;
-	}
-
-	/**
-	 * Enables logging for the {@link Database}.
-	 */
-	public void enableLogging() {
-		logging = true;
-	}
-
-	/**
-	 * Disables logging for the {@link Database}.
-	 */
-	public void disableLogging() {
-		logging = false;
-	}
-
-	/**
-	 * Returns <code>true</code> if logging is enabled.
-	 * 
-	 * @return <code>true</code> if logging is enabled; <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isLogging() {
-		return logging;
-	}
-
-	/**
-	 * Attempts to establish a connection to a database using the appropriate
-	 * method for the database type.
-	 * <p>
-	 * This method should be called before any further {@link Database} methods
-	 * are called. Calling this method does <b>not</b> guarantee that the
-	 * connection is established successfully.
-	 */
-	public abstract void connect();
-
-	/**
-	 * Attempts to disconnect from a database using the appropriate method for
-	 * the database type.
-	 * <p>
-	 * This method should be called when accessing the database is no longer
-	 * needed. The connection will be stopped and the instance removed.
-	 */
-	public abstract void disconnect();
-
-	/**
-	 * Returns <code>true</code> if the connection to the database is valid.
-	 * 
-	 * @return <code>true</code> if the connection is valid; <code>false</code>
-	 *         otherwise.
-	 */
-	public boolean isConnected() {
-		try {
-			return connection.isValid(0);
-		} catch (SQLException e) {
-			return false;
-		}
 	}
 
 	/**
@@ -173,7 +114,8 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class the table definition is based on
 	 */
-	public abstract void createStructure(Class<?> objectClass);
+	public abstract void createStructure(Connection connection,
+			Class<?> objectClass);
 
 	/**
 	 * Updates an existing table in the database based on the table structure
@@ -190,7 +132,8 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class the table definition is based on
 	 */
-	public abstract void updateStructure(Class<?> objectClass);
+	public abstract void updateStructure(Connection connection,
+			Class<?> objectClass);
 
 	/**
 	 * Returns a single object from the database with the given id or
@@ -202,7 +145,7 @@ public abstract class Database {
 	 *            the id of the object
 	 * @return the object with the given id or <code>null</code>
 	 */
-	public <T> T find(Class<T> objectClass, int id) {
+	public <T> T find(Connection connection, Class<T> objectClass, int id) {
 		try {
 			TableRegistration table = TableRegistrationFactory
 					.getTableRegistration(objectClass);
@@ -210,7 +153,7 @@ public abstract class Database {
 			SelectQuery<T> query = select(objectClass).where(
 					equal(table.getId().getName(), id));
 
-			return query.findOne();
+			return query.findOne(connection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -228,7 +171,7 @@ public abstract class Database {
 	 *            the id of the object
 	 * @return the object with the given id or <code>null</code>
 	 */
-	public <T> T find(Class<T> objectClass, long id) {
+	public <T> T find(Connection connection, Class<T> objectClass, long id) {
 		try {
 			TableRegistration table = TableRegistrationFactory
 					.getTableRegistration(objectClass);
@@ -236,7 +179,7 @@ public abstract class Database {
 			SelectQuery<T> query = select(objectClass).where(
 					equal(table.getId().getName(), table.getId().getValue(id)));
 
-			return query.findOne();
+			return query.findOne(connection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -255,7 +198,7 @@ public abstract class Database {
 	 * @return <code>true</code> if the save was successful; <code>false</code>
 	 *         otherwise.
 	 */
-	public <T> boolean save(T object) {
+	public <T> boolean save(Connection connection, T object) {
 		try {
 			TableRegistration table = TableRegistrationFactory
 					.getTableRegistration(object.getClass());
@@ -281,7 +224,7 @@ public abstract class Database {
 				InsertQuery<T> query = insert((Class<T>) object.getClass())
 						.columns(columns).values(values);
 
-				success = query.execute();
+				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			} else {
 				@SuppressWarnings("unchecked")
@@ -291,7 +234,7 @@ public abstract class Database {
 						.where(equal(table.getId().getName(), table.getId()
 								.getValue(object)));
 
-				success = query.execute();
+				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			}
 
@@ -320,7 +263,7 @@ public abstract class Database {
 	 * @return <code>true</code> if the drop was successful; <code>false</code>
 	 *         otherwise.
 	 */
-	public <T> boolean drop(T object) {
+	public <T> boolean drop(Connection connection, T object) {
 		try {
 			TableRegistration table = TableRegistrationFactory
 					.getTableRegistration(object.getClass());
@@ -330,7 +273,7 @@ public abstract class Database {
 					equal(table.getId().getName(),
 							table.getId().getValue(object)));
 
-			return query.execute();
+			return query.execute(connection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -345,11 +288,11 @@ public abstract class Database {
 	 *            the class of the object that will be returned
 	 * @return all the objects in the table
 	 */
-	public <T> List<T> findAll(Class<T> objectClass) {
+	public <T> List<T> findAll(Connection connection, Class<T> objectClass) {
 		try {
 			SelectQuery<T> query = select(objectClass);
 
-			return query.findList();
+			return query.findList(connection);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -366,11 +309,11 @@ public abstract class Database {
 	 * @param objects
 	 *            the objects to save
 	 */
-	public void saveAll(Iterable<?> objects) {
+	public void saveAll(Connection connection, Iterable<?> objects) {
 		Iterator<?> iterator = objects.iterator();
 
 		while (iterator.hasNext()) {
-			save(iterator.next());
+			save(connection, iterator.next());
 		}
 	}
 
@@ -383,11 +326,11 @@ public abstract class Database {
 	 * @param objects
 	 *            the objects to drop
 	 */
-	public void dropAll(Iterable<?> objects) {
+	public void dropAll(Connection connection, Iterable<?> objects) {
 		Iterator<?> iterator = objects.iterator();
 
 		while (iterator.hasNext()) {
-			drop(iterator.next());
+			drop(connection, iterator.next());
 		}
 	}
 
@@ -474,85 +417,26 @@ public abstract class Database {
 	}
 
 	/**
-	 * Begins a transaction for queries on the database connection.
+	 * Enables logging for the {@link Database}.
 	 */
-	public void begin() {
-		try {
-			connection.setAutoCommit(false);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public void enableLogging() {
+		logging = true;
 	}
 
 	/**
-	 * @deprecated Replaced by {@link #begin()}
-	 * @since 2.0.6
+	 * Disables logging for the {@link Database}.
 	 */
-	@Deprecated
-	public void beginTransaction() {
-		begin();
+	public void disableLogging() {
+		logging = false;
 	}
 
 	/**
-	 * Ends the current transaction and commits the changes to the database.
-	 */
-	public void commit() {
-		try {
-			connection.commit();
-			connection.setAutoCommit(true);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * @deprecated Replaced by {@link #commit()}
-	 * @since 2.0.6
-	 */
-	@Deprecated
-	public void endTransaction() {
-		commit();
-	}
-
-	/**
-	 * Undoes all the changes made in the current transaction.
-	 */
-	public void rollback() {
-		try {
-			connection.rollback();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Undoes all the changes made past the savepoint in the current
-	 * transaction.
+	 * Returns <code>true</code> if logging is enabled.
 	 * 
-	 * @param savepoint
-	 *            the savepoint
+	 * @return <code>true</code> if logging is enabled; <code>false</code>
+	 *         otherwise.
 	 */
-	public void rollback(Savepoint savepoint) {
-		try {
-			connection.rollback(savepoint);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Returns a new Savepoint at the current position in the current
-	 * transaction.
-	 * 
-	 * @return the current savepoint
-	 */
-	public Savepoint setSavepoint() {
-		try {
-			return connection.setSavepoint();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return null;
+	public boolean isLogging() {
+		return logging;
 	}
 }

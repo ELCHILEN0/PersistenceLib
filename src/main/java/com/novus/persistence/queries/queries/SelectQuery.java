@@ -15,13 +15,15 @@ import java.util.List;
 import java.util.Set;
 
 import com.novus.persistence.enums.Order;
+import com.novus.persistence.exceptions.ColumnRegistrationException;
+import com.novus.persistence.exceptions.TableRegistrationException;
+
 import org.apache.commons.lang.ArrayUtils;
 
 import com.novus.persistence.databases.Database;
-import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.internal.ColumnRegistration;
+import com.novus.persistence.internal.RegistrationFactory;
 import com.novus.persistence.internal.TableRegistration;
-import com.novus.persistence.internal.TableRegistrationFactory;
 import com.novus.persistence.queries.Query;
 import com.novus.persistence.queries.clauses.GroupByClause;
 import com.novus.persistence.queries.clauses.HavingClause;
@@ -92,7 +94,7 @@ public class SelectQuery<T> extends Query<T> {
 
 	public T findOne(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
@@ -116,6 +118,8 @@ public class SelectQuery<T> extends Query<T> {
 			}
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
+			e.printStackTrace();
 		}
 
 		return null;
@@ -123,7 +127,7 @@ public class SelectQuery<T> extends Query<T> {
 
 	public List<T> findList(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
@@ -134,7 +138,7 @@ public class SelectQuery<T> extends Query<T> {
 				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
-			LinkedList<T> objects = new LinkedList<T>();
+			LinkedList<T> objects = new LinkedList<>();
 
 			while (result.next()) {
 				T object = objectClass.newInstance();
@@ -150,6 +154,8 @@ public class SelectQuery<T> extends Query<T> {
 
 			return objects;
 		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
 			e.printStackTrace();
 		}
 
@@ -158,7 +164,7 @@ public class SelectQuery<T> extends Query<T> {
 
 	public Set<T> findSet(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
@@ -169,7 +175,7 @@ public class SelectQuery<T> extends Query<T> {
 				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
-			LinkedHashSet<T> objects = new LinkedHashSet<T>();
+			LinkedHashSet<T> objects = new LinkedHashSet<>();
 
 			while (result.next()) {
 				T object = objectClass.newInstance();
@@ -186,6 +192,8 @@ public class SelectQuery<T> extends Query<T> {
 			return objects;
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
+			e.printStackTrace();
 		}
 
 		return new HashSet<T>();
@@ -193,7 +201,7 @@ public class SelectQuery<T> extends Query<T> {
 
 	public HashMap<String, Object> findMap(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
@@ -205,7 +213,7 @@ public class SelectQuery<T> extends Query<T> {
 			}
 
 			if (result.first()) {
-				HashMap<String, Object> map = new HashMap<String, Object>();
+				HashMap<String, Object> map = new HashMap<>();
 
 				for (ColumnRegistration column : table.getColumns()) {
 					if (ArrayUtils.contains(validColumns, column.getName())) {
@@ -215,6 +223,8 @@ public class SelectQuery<T> extends Query<T> {
 
 				return map;
 			}
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
+			e.printStackTrace();
 		}
 
 		return new HashMap<String, Object>();
@@ -222,7 +232,7 @@ public class SelectQuery<T> extends Query<T> {
 
 	public List<HashMap<String, Object>> findMapList(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
 			ResultSetMetaData meta = result.getMetaData();
@@ -233,9 +243,9 @@ public class SelectQuery<T> extends Query<T> {
 				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
-			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+			List<HashMap<String, Object>> list = new LinkedList<>();
 			while (result.next()) {
-				HashMap<String, Object> map = new HashMap<String, Object>();
+				HashMap<String, Object> map = new HashMap<>();
 
 				for (ColumnRegistration column : table.getColumns()) {
 					if (ArrayUtils.contains(validColumns, column.getName())) {
@@ -247,7 +257,11 @@ public class SelectQuery<T> extends Query<T> {
 			}
 
 			return list;
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
+			e.printStackTrace();
 		}
+
+		return new ArrayList<>();
 	}
 
 	// Getters

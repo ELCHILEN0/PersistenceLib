@@ -60,7 +60,7 @@ public class UpdateQuery<T> extends Query<T> {
 	}
 
 	public boolean execute(Connection connection) throws SQLException {
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			statement.execute();
 			generatedKeys = statement.getGeneratedKeys();
 

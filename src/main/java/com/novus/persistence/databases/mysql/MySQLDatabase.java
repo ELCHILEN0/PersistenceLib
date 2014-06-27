@@ -10,10 +10,11 @@ import javax.sql.DataSource;
 
 import com.novus.persistence.databases.Database;
 import com.novus.persistence.enums.DataType;
+import com.novus.persistence.exceptions.ColumnRegistrationException;
 import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.internal.ColumnRegistration;
+import com.novus.persistence.internal.RegistrationFactory;
 import com.novus.persistence.internal.TableRegistration;
-import com.novus.persistence.internal.TableRegistrationFactory;
 
 public class MySQLDatabase extends Database {
 
@@ -21,11 +22,11 @@ public class MySQLDatabase extends Database {
 		super(source, new MySQLProvider());
 	}
 
-	public void createStructure(Connection connection, Class<?> objectClass) {
+	public void createStructure(Connection connection, Class<?> objectClass) throws SQLException {
 		TableRegistration table = null;
 		try {
-			table = TableRegistrationFactory.getTableRegistration(objectClass);
-		} catch (TableRegistrationException e) {
+			table = RegistrationFactory.getTableRegistration(objectClass);
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
 			e.printStackTrace();
 		}
 
@@ -51,17 +52,15 @@ public class MySQLDatabase extends Database {
 
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 	}
 
-	public void updateStructure(Connection connection, Class<?> objectClass) {
+	public void updateStructure(Connection connection, Class<?> objectClass) throws SQLException {
 		TableRegistration table = null;
 		try {
-			table = TableRegistrationFactory.getTableRegistration(objectClass);
-		} catch (TableRegistrationException e1) {
-			e1.printStackTrace();
+			table = RegistrationFactory.getTableRegistration(objectClass);
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
+			e.printStackTrace();
 		}
 
 		String query = String.format("SELECT * FROM %s LIMIT 1", table.getName());
@@ -103,8 +102,6 @@ public class MySQLDatabase extends Database {
 			String modify = String.format("ALTER TABLE %s MODIFY COLUMN %s" + type + notNull + unique + autoIncrement, table.getName(), column.getName());
 			try (PreparedStatement statement = connection.prepareStatement(modify)) {
 				statement.execute();
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 
@@ -118,8 +115,6 @@ public class MySQLDatabase extends Database {
 
 			try (PreparedStatement statement = connection.prepareStatement(add)) {
 				statement.execute();
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 	}

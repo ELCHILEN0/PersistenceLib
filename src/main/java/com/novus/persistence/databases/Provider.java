@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import com.novus.persistence.enums.Comparator;
 import com.novus.persistence.enums.DataType;
 import com.novus.persistence.enums.Order;
+import com.novus.persistence.exceptions.ColumnRegistrationException;
 import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.queries.Query;
 
@@ -47,12 +48,10 @@ public interface Provider {
 	 *            the query
 	 * @return a prepared statement based or <code>null</code> if the query was
 	 *         unable to be processed
-	 * @throws TableRegistrationException
-	 *             if the class associated with the query cannot be registered
 	 * @throws SQLException
-	 *             if an SQL error occurred
+	 *             if a database access error occurs
 	 */
-	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws TableRegistrationException, SQLException;
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws SQLException;
 
 	/**
 	 * Returns a string representation of the order for a database type.

@@ -90,7 +90,7 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public T findOne(Connection connection) throws SQLException, TableRegistrationException {
+	public T findOne(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
@@ -121,7 +121,7 @@ public class SelectQuery<T> extends Query<T> {
 		return null;
 	}
 
-	public List<T> findList(Connection connection) throws SQLException, TableRegistrationException {
+	public List<T> findList(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
@@ -156,7 +156,7 @@ public class SelectQuery<T> extends Query<T> {
 		return new ArrayList<T>();
 	}
 
-	public Set<T> findSet(Connection connection) throws SQLException, TableRegistrationException {
+	public Set<T> findSet(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
@@ -191,7 +191,7 @@ public class SelectQuery<T> extends Query<T> {
 		return new HashSet<T>();
 	}
 
-	public HashMap<String, Object> findMap(Connection connection) throws SQLException, TableRegistrationException {
+	public HashMap<String, Object> findMap(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
@@ -220,7 +220,7 @@ public class SelectQuery<T> extends Query<T> {
 		return new HashMap<String, Object>();
 	}
 
-	public List<HashMap<String, Object>> findMapList(Connection connection) throws SQLException, TableRegistrationException {
+	public List<HashMap<String, Object>> findMapList(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 

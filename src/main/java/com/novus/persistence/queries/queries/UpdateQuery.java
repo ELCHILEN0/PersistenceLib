@@ -59,21 +59,13 @@ public class UpdateQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public boolean execute(Connection connection) {
-		try {
-			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
-
+	public boolean execute(Connection connection) throws SQLException {
+		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			statement.execute();
 			generatedKeys = statement.getGeneratedKeys();
 
 			return true;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-
-		return false;
 	}
 
 	public HashMap<String, Object> getMap() {

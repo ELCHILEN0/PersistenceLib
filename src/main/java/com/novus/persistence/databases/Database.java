@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import org.apache.commons.lang.ArrayUtils;
 
 import com.novus.persistence.internal.ColumnRegistration;
+import com.novus.persistence.internal.RegistrationFactory;
 import com.novus.persistence.internal.TableRegistration;
 import com.novus.persistence.internal.TableRegistrationFactory;
 import com.novus.persistence.queries.queries.DeleteQuery;
@@ -113,8 +114,9 @@ public abstract class Database {
 	 * 
 	 * @param objectClass
 	 *            the class the table definition is based on
+	 * @throws SQLException 
 	 */
-	public abstract void createStructure(Connection connection, Class<?> objectClass);
+	public abstract void createStructure(Connection connection, Class<?> objectClass) throws SQLException;
 
 	/**
 	 * Updates an existing table in the database based on the table structure
@@ -130,8 +132,9 @@ public abstract class Database {
 	 * 
 	 * @param objectClass
 	 *            the class the table definition is based on
+	 * @throws SQLException 
 	 */
-	public abstract void updateStructure(Connection connection, Class<?> objectClass);
+	public abstract void updateStructure(Connection connection, Class<?> objectClass) throws SQLException;
 
 	/**
 	 * Returns a single object from the database with the given id or
@@ -145,7 +148,7 @@ public abstract class Database {
 	 */
 	public <T> T find(Connection connection, Class<T> objectClass, int id) {
 		try {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), id));
 
@@ -169,7 +172,7 @@ public abstract class Database {
 	 */
 	public <T> T find(Connection connection, Class<T> objectClass, long id) {
 		try {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
+			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), table.getId().getValue(id)));
 
@@ -194,7 +197,7 @@ public abstract class Database {
 	 */
 	public <T> boolean save(Connection connection, T object) {
 		try {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
+			TableRegistration table = RegistrationFactory.getTableRegistration(object.getClass());
 
 			String[] columns = ArrayUtils.EMPTY_STRING_ARRAY;
 			Object[] values = ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -251,7 +254,7 @@ public abstract class Database {
 	 */
 	public <T> boolean drop(Connection connection, T object) {
 		try {
-			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
+			TableRegistration table = RegistrationFactory.getTableRegistration(object.getClass());
 
 			@SuppressWarnings("unchecked")
 			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(equal(table.getId().getName(), table.getId().getValue(object)));

@@ -13,9 +13,10 @@ import com.novus.persistence.enums.Comparator;
 import com.novus.persistence.enums.DataType;
 import com.novus.persistence.enums.Junction;
 import com.novus.persistence.enums.Order;
+import com.novus.persistence.exceptions.ColumnRegistrationException;
 import com.novus.persistence.exceptions.TableRegistrationException;
+import com.novus.persistence.internal.RegistrationFactory;
 import com.novus.persistence.internal.TableRegistration;
-import com.novus.persistence.internal.TableRegistrationFactory;
 import com.novus.persistence.queries.Clause;
 import com.novus.persistence.queries.Query;
 import com.novus.persistence.queries.clauses.GroupByClause;
@@ -166,10 +167,15 @@ public class MySQLProvider implements Provider {
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}
 
-	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws TableRegistrationException, SQLException {
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws SQLException {
 		Database database = q.getDatabase();
 
-		TableRegistration table = TableRegistrationFactory.getTableRegistration(q.getObjectClass());
+		TableRegistration table = null;
+		try {
+			table = RegistrationFactory.getTableRegistration(q.getObjectClass());
+		} catch (TableRegistrationException | ColumnRegistrationException e) {
+			e.printStackTrace();
+		}
 
 		if (q instanceof InsertQuery<?>) {
 			InsertQuery<T> query = (InsertQuery<T>) q;

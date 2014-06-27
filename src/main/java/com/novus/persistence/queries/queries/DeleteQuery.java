@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.novus.persistence.databases.Database;
-import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.queries.Query;
 import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
@@ -23,7 +22,7 @@ public class DeleteQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public boolean execute(Connection connection) throws SQLException, TableRegistrationException {
+	public boolean execute(Connection connection) throws SQLException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			statement.executeUpdate();
 

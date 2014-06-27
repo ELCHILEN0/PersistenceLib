@@ -52,8 +52,7 @@ public interface Provider {
 	 * @throws SQLException
 	 *             if an SQL error occurred
 	 */
-	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q)
-			throws TableRegistrationException, SQLException;
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws TableRegistrationException, SQLException;
 
 	/**
 	 * Returns a string representation of the order for a database type.

@@ -11,10 +11,15 @@ import java.sql.Timestamp;
  * @since 1.0.0
  */
 public enum DataType {
-	INT(Integer.class, int.class), LONG(Long.class, long.class), DOUBLE(
-			Double.class, double.class), FLOAT(Float.class, float.class), BOOLEAN(
-			Boolean.class, boolean.class), STRING(String.class), DATE(
-			Date.class), TIME(Time.class), TIMESTAMP(Timestamp.class);
+	INT(Integer.class, int.class),
+	LONG(Long.class, long.class),
+	DOUBLE(Double.class, double.class),
+	FLOAT(Float.class, float.class),
+	BOOLEAN(Boolean.class, boolean.class),
+	STRING(String.class),
+	DATE(Date.class),
+	TIME(Time.class),
+	TIMESTAMP(Timestamp.class);
 
 	private Class<?>[]	classes;
 

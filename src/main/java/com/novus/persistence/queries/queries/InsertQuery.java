@@ -51,8 +51,7 @@ public class InsertQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public boolean execute(Connection connection) throws SQLException,
-			TableRegistrationException {
+	public boolean execute(Connection connection) throws SQLException, TableRegistrationException {
 		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			statement.executeUpdate();
 

@@ -166,8 +166,7 @@ public class MySQLProvider implements Provider {
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}
 
-	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q)
-			throws TableRegistrationException, SQLException {
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws TableRegistrationException, SQLException {
 		Database database = q.getDatabase();
 
 		TableRegistration table = TableRegistrationFactory.getTableRegistration(q.getObjectClass());

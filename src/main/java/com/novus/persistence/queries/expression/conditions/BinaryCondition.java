@@ -9,8 +9,7 @@ public class BinaryCondition extends Condition {
 	private Object		value;
 	private Comparator	comparator;
 
-	public BinaryCondition(Expression expression, String column, Object value,
-			Comparator comparator) {
+	public BinaryCondition(Expression expression, String column, Object value, Comparator comparator) {
 		super(expression);
 
 		this.column = column;

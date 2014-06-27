@@ -9,18 +9,24 @@ import com.novus.persistence.exceptions.TableRegistrationException;
 public class TableRegistrationFactory {
 	private static HashMap<Class<?>, TableRegistration>	registrations	= new HashMap<Class<?>, TableRegistration>();
 
-	public static TableRegistration getTableRegistration(Class<?> tableClass)
-			throws TableRegistrationException {
+	/**
+	 * Converts a Java class
+	 * 
+	 * @param tableClass
+	 * @return
+	 * @throws TableRegistrationException
+	 */
+	public static TableRegistration getTableRegistration(Class<?> tableClass) throws TableRegistrationException {
 		if (registrations.containsKey(tableClass)) {
 			return registrations.get(tableClass);
 		}
 
 		if (!(tableClass.isAnnotationPresent(Table.class))) {
-			throw new TableRegistrationException("Class '" + tableClass.getCanonicalName() + "' does not have a Table annotation present.");
+			throw new TableRegistrationException("Class '" + tableClass.getCanonicalName() + "' does not have a valid Table annotation.");
 		}
 
 		if (ColumnRegistrationFactory.getIdRegistration(tableClass) == null) {
-			throw new TableRegistrationException("Class '" + tableClass.getCanonicalName() + "' does not have an Id annotation present.");
+			throw new TableRegistrationException("Class '" + tableClass.getCanonicalName() + "' does not have a valid Id annotation.");
 		}
 
 		Table annotation = tableClass.getAnnotation(Table.class);
@@ -32,5 +38,4 @@ public class TableRegistrationFactory {
 
 		return registration;
 	}
-
 }

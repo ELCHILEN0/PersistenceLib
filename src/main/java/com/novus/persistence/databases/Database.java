@@ -114,8 +114,7 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class the table definition is based on
 	 */
-	public abstract void createStructure(Connection connection,
-			Class<?> objectClass);
+	public abstract void createStructure(Connection connection, Class<?> objectClass);
 
 	/**
 	 * Updates an existing table in the database based on the table structure
@@ -132,8 +131,7 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class the table definition is based on
 	 */
-	public abstract void updateStructure(Connection connection,
-			Class<?> objectClass);
+	public abstract void updateStructure(Connection connection, Class<?> objectClass);
 
 	/**
 	 * Returns a single object from the database with the given id or

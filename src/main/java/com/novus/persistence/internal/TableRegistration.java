@@ -10,8 +10,7 @@ public class TableRegistration {
 	private ColumnRegistration				id			= null;
 	private LinkedList<ColumnRegistration>	columns		= new LinkedList<ColumnRegistration>();
 
-	public TableRegistration(Table annotation, Class<?> tableClass,
-			ColumnRegistration id, LinkedList<ColumnRegistration> columns) {
+	public TableRegistration(Table annotation, Class<?> tableClass, ColumnRegistration id, LinkedList<ColumnRegistration> columns) {
 		this.annotation = annotation;
 		this.tableClass = tableClass;
 		this.id = id;

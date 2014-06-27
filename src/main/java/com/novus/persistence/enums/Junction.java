@@ -7,5 +7,6 @@ package com.novus.persistence.enums;
  * @since 1.0.0
  */
 public enum Junction {
-	AND, OR;
+	AND,
+	OR;
 }

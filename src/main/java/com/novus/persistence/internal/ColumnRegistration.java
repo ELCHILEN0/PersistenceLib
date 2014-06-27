@@ -37,15 +37,13 @@ public class ColumnRegistration {
 		return annotation.length();
 	}
 
-	public Object getValue(Object o) throws IllegalArgumentException,
-			IllegalAccessException {
+	public Object getValue(Object o) throws IllegalArgumentException, IllegalAccessException {
 		field.setAccessible(true);
 
 		return field.get(o);
 	}
 
-	public void setValue(Object o, Object value)
-			throws IllegalArgumentException, IllegalAccessException {
+	public void setValue(Object o, Object value) throws IllegalArgumentException, IllegalAccessException {
 		field.setAccessible(true);
 
 		field.set(o, value);

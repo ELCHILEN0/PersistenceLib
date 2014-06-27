@@ -31,7 +31,6 @@ import com.novus.persistence.queries.queries.DeleteQuery;
 import com.novus.persistence.queries.queries.InsertQuery;
 import com.novus.persistence.queries.queries.SelectQuery;
 import com.novus.persistence.queries.queries.UpdateQuery;
-import com.mysql.jdbc.Statement;
 
 public class MySQLProvider implements Provider {
 
@@ -167,6 +166,7 @@ public class MySQLProvider implements Provider {
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;
 	}
 
+	@Override
 	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws SQLException {
 		Database database = q.getDatabase();
 
@@ -185,17 +185,19 @@ public class MySQLProvider implements Provider {
 			sql = sql.replace("{ COLUMNS }", StringUtils.join(query.getColumns(), ", "));
 			sql = sql.replace("{ VALUES }", StringUtils.join(query.getColumns(), ", ").replaceAll("[^\\s*,]+", "?"));
 
-			if (database.isLogging())
+			if (database.isLogging()) {
 				System.out.println(sql);
+			}
 
-			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
 
 			for (int i = 1; i <= objects.length; i++) {
-				if (database.isLogging())
+				if (database.isLogging()) {
 					System.out.println(objects[i - 1]);
+				}
 
 				statement.setObject(i, objects[i - 1]);
 			}
@@ -209,18 +211,20 @@ public class MySQLProvider implements Provider {
 			sql = sql.replace("{ COLUMNS_AND_VALUES }", StringUtils.join(query.getColumns(), " = ?, ") + " = ?");
 			sql = sql.replace("{ WHERE }", clauseSQL(query.getWhere()));
 
-			if (database.isLogging())
+			if (database.isLogging()) {
 				System.out.println(sql);
+			}
 
-			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
 
 			for (int i = 1; i <= objects.length; i++) {
-				if (database.isLogging())
+				if (database.isLogging()) {
 					System.out.println(objects[i - 1]);
+				}
 
 				statement.setObject(i, objects[i - 1]);
 			}
@@ -233,8 +237,9 @@ public class MySQLProvider implements Provider {
 			sql = sql.replace("{ TABLE }", table.getName());
 			sql = sql.replace("{ WHERE }", clauseSQL(query.getWhere()));
 
-			if (database.isLogging())
+			if (database.isLogging()) {
 				System.out.println(sql);
+			}
 
 			PreparedStatement statement = connection.prepareStatement(sql);
 
@@ -242,8 +247,9 @@ public class MySQLProvider implements Provider {
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
 
 			for (int i = 1; i <= objects.length; i++) {
-				if (database.isLogging())
+				if (database.isLogging()) {
 					System.out.println(objects[i - 1]);
+				}
 
 				statement.setObject(i, objects[i - 1]);
 			}
@@ -267,8 +273,9 @@ public class MySQLProvider implements Provider {
 			objects = ArrayUtils.addAll(objects, clauseParams(query.getWhere()));
 
 			for (int i = 1; i <= objects.length; i++) {
-				if (database.isLogging())
+				if (database.isLogging()) {
 					System.out.println(objects[i - 1]);
+				}
 
 				statement.setObject(i, objects[i - 1]);
 			}
@@ -309,26 +316,90 @@ public class MySQLProvider implements Provider {
 		return null;
 	}
 
-	public String getDataType(DataType type) {
-		switch (type) {
-			case INT:
-				return "INT";
-			case LONG:
-				return "BIGINT";
-			case DOUBLE:
-				return "DOUBLE";
-			case FLOAT:
-				return "FLOAT";
-			case BOOLEAN:
-				return "BOOLEAN";
-			case STRING:
-				return "LONG VARCHAR";
-			case DATE:
-				return "DATE";
-			case TIME:
-				return "TIME";
-			case TIMESTAMP:
-				return "TIMESTAMP";
+	@Override
+	public String getDataType(int length, DataType type) {
+		if (length == -1) {
+			switch (type) {
+				case CHAR:
+					return "CHAR";
+				case STRING:
+					return "VARCHAR";
+				case BOOLEAN:
+					return "BIT";
+				case BYTE:
+					return "TINYINT";
+				case NUMERIC:
+					return "NUMERIC";
+				case SHORT:
+					return "SMALLINT";
+				case INTEGER:
+					return "INT";
+				case LONG:
+					return "BIGINT";
+				case FLOAT:
+					return "REAL";
+				case DOUBLE:
+					return "DOUBLE";
+				case BINARY:
+					return "VARBINARY";
+				case DATE:
+					return "DATE";
+				case TIME:
+					return "TIME";
+				case TIMESTAMP:
+					return "TIMESTAMP";
+				case CLOB:
+					return "CLOB";
+				case BLOB:
+					return "BLOB";
+				case ARRAY:
+					return "ARRAY";
+				case REF:
+					return "REF";
+				case STRUCT:
+					return "STRUCT";
+			}
+		} else {
+			switch (type) {
+				case CHAR:
+					return "CHAR(" + length + ")";
+				case STRING:
+					return "VARCHAR(" + length + ")";
+				case BOOLEAN:
+					return "BIT";
+				case BYTE:
+					return "TINYINT";
+				case NUMERIC:
+					return "NUMERIC";
+				case SHORT:
+					return "SMALLINT";
+				case INTEGER:
+					return "INT";
+				case LONG:
+					return "BIGINT";
+				case FLOAT:
+					return "REAL";
+				case DOUBLE:
+					return "DOUBLE";
+				case BINARY:
+					return "VARBINARY(" + length + ")";
+				case DATE:
+					return "DATE";
+				case TIME:
+					return "TIME";
+				case TIMESTAMP:
+					return "TIMESTAMP";
+				case CLOB:
+					return "CLOB";
+				case BLOB:
+					return "BLOB";
+				case ARRAY:
+					return "ARRAY";
+				case REF:
+					return "REF";
+				case STRUCT:
+					return "STRUCT";
+			}
 		}
 
 		return null;

@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import com.novus.persistence.enums.Comparator;
 import com.novus.persistence.enums.DataType;
 import com.novus.persistence.enums.Order;
-import com.novus.persistence.exceptions.ColumnRegistrationException;
-import com.novus.persistence.exceptions.TableRegistrationException;
 import com.novus.persistence.queries.Query;
 
 /**
@@ -72,12 +70,19 @@ public interface Provider {
 	public String getComparator(Comparator comparator);
 
 	/**
-	 * The string representation of the data type for a database type.
+	 * The string representation of the data type for a database type with a
+	 * length parameter.
+	 * <p>
+	 * If the length parameter is
+	 * <code>-1<code> then the length parameter will not be included in the string representation.  
+	 * Any other positive integers for the length will be included in the string representation.
 	 * 
+	 * @param length
+	 *            the length of the column
 	 * @param type
 	 *            the data type
 	 * @return the string form of the data type
 	 */
-	public String getDataType(DataType type);
+	public String getDataType(int length, DataType type);
 
 }

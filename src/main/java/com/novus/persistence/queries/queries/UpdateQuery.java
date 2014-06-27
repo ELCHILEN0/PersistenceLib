@@ -16,10 +16,10 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
 
 public class UpdateQuery<T> extends Query<T> {
-	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
-	protected WhereClause where;
-	
-	private ResultSet generatedKeys;
+	private LinkedHashMap<String, Object>	map	= new LinkedHashMap<String, Object>();
+	protected WhereClause					where;
+
+	private ResultSet						generatedKeys;
 
 	public UpdateQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);
@@ -27,44 +27,44 @@ public class UpdateQuery<T> extends Query<T> {
 
 	public UpdateQuery<T> where(Condition condition) {
 		where = new WhereClause(condition);
-		
+
 		return this;
 	}
-	
+
 	public UpdateQuery<T> columns(String... columns) {
 		for (String column : columns) {
 			map.put(column, null);
 		}
-		
+
 		return this;
 	}
-	
+
 	public UpdateQuery<T> values(Object... values) {
 		int i = 0;
 		for (String column : map.keySet()) {
-			if(values.length > i) {
+			if (values.length > i) {
 				map.put(column, values[i]);
 			} else {
 				break;
 			}
 			i++;
 		}
-		
+
 		return this;
 	}
-	
+
 	public UpdateQuery<T> map(LinkedHashMap<String, Object> map) {
 		this.map = map;
-		
+
 		return this;
 	}
-	
-	public boolean execute(Connection connection) {		
-		try {
-            PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 
-            statement.execute();
-            generatedKeys = statement.getGeneratedKeys();
+	public boolean execute(Connection connection) {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
+
+			statement.execute();
+			generatedKeys = statement.getGeneratedKeys();
 
 			return true;
 		} catch (TableRegistrationException e) {
@@ -72,32 +72,32 @@ public class UpdateQuery<T> extends Query<T> {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return false;
 	}
-	
+
 	public HashMap<String, Object> getMap() {
 		return map;
 	}
-	
+
 	public String[] getColumns() {
 		String[] columns = ArrayUtils.EMPTY_STRING_ARRAY;
-		
+
 		for (String column : map.keySet()) {
 			columns = (String[]) ArrayUtils.add(columns, column);
 		}
-		
+
 		return columns;
 	}
-	
+
 	public Object[] getValues() {
 		return map.values().toArray();
 	}
-	
+
 	public WhereClause getWhere() {
 		return where;
 	}
-	
+
 	public ResultSet getGeneratedKeys() {
 		return generatedKeys;
 	}

@@ -11,35 +11,27 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
 
 public class DeleteQuery<T> extends Query<T> {
-	protected WhereClause where;
+	protected WhereClause	where;
 
 	public DeleteQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);
 	}
-	
 
 	public DeleteQuery<T> where(Condition condition) {
 		where = new WhereClause(condition);
-		
+
 		return this;
 	}
-	
-	public boolean execute(Connection connection) {		
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			
+
+	public boolean execute(Connection connection) throws SQLException,
+			TableRegistrationException {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			statement.executeUpdate();
-			statement.close();
-			
+
 			return true;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
-		
-		return false;
 	}
-	
+
 	public WhereClause getWhere() {
 		return where;
 	}

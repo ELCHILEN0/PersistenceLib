@@ -6,8 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Provides an annotated interface for class fields which defines a single Column as
- * the unique identifier of a Table. Represents the id of a table.
+ * Provides an annotated interface for class fields which defines a single
+ * Column as the unique identifier of a Table. Represents the id of a table.
  * <p>
  * An Id annotation must be present in every class to be persisted to ensure
  * that the class can be registered correctly. Fields which are annotated with

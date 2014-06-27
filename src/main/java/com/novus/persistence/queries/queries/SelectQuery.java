@@ -31,12 +31,12 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
 
 public class SelectQuery<T> extends Query<T> {
-	private LinkedHashSet<String> columns = new LinkedHashSet<String>();
-	private WhereClause where;
-	private GroupByClause groupBy;
-	private HavingClause having;
-	private OrderByClause orderBy;
-	private LimitClause limit;
+	private LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
+	private WhereClause				where;
+	private GroupByClause			groupBy;
+	private HavingClause			having;
+	private OrderByClause			orderBy;
+	private LimitClause				limit;
 
 	public SelectQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);
@@ -60,11 +60,11 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
-    public SelectQuery<T> groupBy(String... columns) {
-        groupBy = new GroupByClause(columns);
+	public SelectQuery<T> groupBy(String... columns) {
+		groupBy = new GroupByClause(columns);
 
-        return this;
-    }
+		return this;
+	}
 
 	public SelectQuery<T> where(Condition condition) {
 		where = new WhereClause(condition);
@@ -78,11 +78,11 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
-    public SelectQuery<T> orderBy(Order order, String... columns) {
-        orderBy = new OrderByClause(order, columns);
+	public SelectQuery<T> orderBy(Order order, String... columns) {
+		orderBy = new OrderByClause(order, columns);
 
-        return this;
-    }
+		return this;
+	}
 
 	public SelectQuery<T> filter(String... columns) {
 		this.columns.addAll(Arrays.asList(columns));
@@ -90,8 +90,9 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public T findOne(Connection connection) {
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+	public T findOne(Connection connection) throws SQLException,
+			TableRegistrationException {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -100,38 +101,30 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = (String[])  ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
-			if(result.first()) {
-				T object = objectClass.newInstance(); 
+			if (result.first()) {
+				T object = objectClass.newInstance();
 
-				for(ColumnRegistration column : table.getColumns()) {
-					if(ArrayUtils.contains(validColumns, column.getName())) {
+				for (ColumnRegistration column : table.getColumns()) {
+					if (ArrayUtils.contains(validColumns, column.getName())) {
 						column.setValue(object, result.getObject(column.getName()));
 					}
 				}
 
-				result.close();
-				statement.close();
-				
 				return object;
 			}
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
 		return null;
 	}
 
-	public List<T> findList(Connection connection) {
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+	public List<T> findList(Connection connection) throws SQLException,
+			TableRegistrationException {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -140,16 +133,16 @@ public class SelectQuery<T> extends Query<T> {
 			String[] validColumns = ArrayUtils.EMPTY_STRING_ARRAY;
 
 			for (int i = 1; i <= meta.getColumnCount(); i++) {
-				validColumns = (String[])  ArrayUtils.add(validColumns, meta.getColumnLabel(i));
+				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
 			LinkedList<T> objects = new LinkedList<T>();
 
-			while(result.next()) {
-				T object = objectClass.newInstance(); 
+			while (result.next()) {
+				T object = objectClass.newInstance();
 
-				for(ColumnRegistration column : table.getColumns()) {
-					if(ArrayUtils.contains(validColumns, column.getName())) {
+				for (ColumnRegistration column : table.getColumns()) {
+					if (ArrayUtils.contains(validColumns, column.getName())) {
 						column.setValue(object, result.getObject(column.getName()));
 					}
 				}
@@ -157,25 +150,17 @@ public class SelectQuery<T> extends Query<T> {
 				objects.add(object);
 			}
 
-			result.close();
-			statement.close();
-			
 			return objects;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
 		return new ArrayList<T>();
 	}
 
-	public Set<T> findSet(Connection connection) {
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+	public Set<T> findSet(Connection connection) throws SQLException,
+			TableRegistrationException {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -189,11 +174,11 @@ public class SelectQuery<T> extends Query<T> {
 
 			LinkedHashSet<T> objects = new LinkedHashSet<T>();
 
-			while(result.next()) {
-				T object = objectClass.newInstance(); 
+			while (result.next()) {
+				T object = objectClass.newInstance();
 
-				for(ColumnRegistration column : table.getColumns()) {
-					if(ArrayUtils.contains(validColumns, column.getName())) {
+				for (ColumnRegistration column : table.getColumns()) {
+					if (ArrayUtils.contains(validColumns, column.getName())) {
 						column.setValue(object, result.getObject(column.getName()));
 					}
 				}
@@ -201,25 +186,17 @@ public class SelectQuery<T> extends Query<T> {
 				objects.add(object);
 			}
 
-			result.close();
-			statement.close();
-			
 			return objects;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 
 		return new HashSet<T>();
 	}
 
-	public HashMap<String, Object> findMap(Connection connection) {
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+	public HashMap<String, Object> findMap(Connection connection)
+			throws SQLException, TableRegistrationException {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -231,28 +208,25 @@ public class SelectQuery<T> extends Query<T> {
 				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
-			if(result.first()) {
+			if (result.first()) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
 
-				for(ColumnRegistration column : table.getColumns()) {
-					if(ArrayUtils.contains(validColumns, column.getName())) {
+				for (ColumnRegistration column : table.getColumns()) {
+					if (ArrayUtils.contains(validColumns, column.getName())) {
 						map.put(column.getName(), result.getObject(column.getName()));
 					}
 				}
-				
+
 				return map;
 			}
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 
 		return new HashMap<String, Object>();
 	}
 
-	public List<HashMap<String, Object>> findMapList(Connection connection) {
-		try(PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+	public List<HashMap<String, Object>> findMapList(Connection connection)
+			throws SQLException, TableRegistrationException {
+		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
 			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -264,29 +238,23 @@ public class SelectQuery<T> extends Query<T> {
 				validColumns = (String[]) ArrayUtils.add(validColumns, meta.getColumnLabel(i));
 			}
 
-			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
-			while(result.next()) {
+			ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+			while (result.next()) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
 
-				for(ColumnRegistration column : table.getColumns()) {
-					if(ArrayUtils.contains(validColumns, column.getName())) {
+				for (ColumnRegistration column : table.getColumns()) {
+					if (ArrayUtils.contains(validColumns, column.getName())) {
 						map.put(column.getName(), result.getObject(column.getName()));
 					}
 				}
-				
+
 				list.add(map);
 			}
-						
-			return list;
-		} catch (TableRegistrationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 
-		return new ArrayList<HashMap<String,Object>>();
+			return list;
+		}
 	}
-	
+
 	// Getters
 	public LinkedHashSet<String> getColumns() {
 		return columns;

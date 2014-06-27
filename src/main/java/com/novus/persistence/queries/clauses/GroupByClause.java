@@ -7,8 +7,8 @@ import java.util.LinkedHashSet;
 import com.novus.persistence.queries.Clause;
 
 public class GroupByClause extends Clause {
-	private LinkedHashSet<String> columns = new LinkedHashSet<String>();
-	
+	private LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
+
 	public GroupByClause(String... columns) {
 		this.columns.addAll(Arrays.asList(columns));
 	}

@@ -54,10 +54,10 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * @since 1.0.0
  */
 public abstract class Database {
-	protected DataSource source;
-	protected Provider provider;
+	protected DataSource	source;
+	protected Provider		provider;
 
-	private boolean logging = false;
+	private boolean			logging	= false;
 
 	/**
 	 * Constructs a new {@link Database} object with the specified
@@ -147,11 +147,9 @@ public abstract class Database {
 	 */
 	public <T> T find(Connection connection, Class<T> objectClass, int id) {
 		try {
-			TableRegistration table = TableRegistrationFactory
-					.getTableRegistration(objectClass);
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			SelectQuery<T> query = select(objectClass).where(
-					equal(table.getId().getName(), id));
+			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), id));
 
 			return query.findOne(connection);
 		} catch (Exception e) {
@@ -173,11 +171,9 @@ public abstract class Database {
 	 */
 	public <T> T find(Connection connection, Class<T> objectClass, long id) {
 		try {
-			TableRegistration table = TableRegistrationFactory
-					.getTableRegistration(objectClass);
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(objectClass);
 
-			SelectQuery<T> query = select(objectClass).where(
-					equal(table.getId().getName(), table.getId().getValue(id)));
+			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), table.getId().getValue(id)));
 
 			return query.findOne(connection);
 		} catch (Exception e) {
@@ -200,8 +196,7 @@ public abstract class Database {
 	 */
 	public <T> boolean save(Connection connection, T object) {
 		try {
-			TableRegistration table = TableRegistrationFactory
-					.getTableRegistration(object.getClass());
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
 
 			String[] columns = ArrayUtils.EMPTY_STRING_ARRAY;
 			Object[] values = ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -210,8 +205,7 @@ public abstract class Database {
 				ColumnRegistration column = table.getColumns().get(i);
 
 				if (!(table.getId().getName().equals(column.getName()))) {
-					columns = (String[]) ArrayUtils.add(columns,
-							column.getName());
+					columns = (String[]) ArrayUtils.add(columns, column.getName());
 					values = ArrayUtils.add(values, column.getValue(object));
 				}
 			}
@@ -221,26 +215,20 @@ public abstract class Database {
 
 			if (table.getId().getValue(object) == null) {
 				@SuppressWarnings("unchecked")
-				InsertQuery<T> query = insert((Class<T>) object.getClass())
-						.columns(columns).values(values);
+				InsertQuery<T> query = insert((Class<T>) object.getClass()).columns(columns).values(values);
 
 				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			} else {
 				@SuppressWarnings("unchecked")
-				UpdateQuery<T> query = update((Class<T>) object.getClass())
-						.columns(columns)
-						.values(values)
-						.where(equal(table.getId().getName(), table.getId()
-								.getValue(object)));
+				UpdateQuery<T> query = update((Class<T>) object.getClass()).columns(columns).values(values).where(equal(table.getId().getName(), table.getId().getValue(object)));
 
 				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			}
 
 			if (generatedKeys != null && generatedKeys.next()) {
-				if (table.getId().getType() == Integer.class
-						|| table.getId().getType() == int.class) {
+				if (table.getId().getType() == Integer.class || table.getId().getType() == int.class) {
 					table.getId().setValue(object, generatedKeys.getInt(1));
 				} else {
 					table.getId().setValue(object, generatedKeys.getObject(1));
@@ -265,13 +253,10 @@ public abstract class Database {
 	 */
 	public <T> boolean drop(Connection connection, T object) {
 		try {
-			TableRegistration table = TableRegistrationFactory
-					.getTableRegistration(object.getClass());
+			TableRegistration table = TableRegistrationFactory.getTableRegistration(object.getClass());
 
 			@SuppressWarnings("unchecked")
-			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(
-					equal(table.getId().getName(),
-							table.getId().getValue(object)));
+			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(equal(table.getId().getName(), table.getId().getValue(object)));
 
 			return query.execute(connection);
 		} catch (Exception e) {
@@ -352,7 +337,6 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class of the object for the SelectQuery
 	 * @return a SelectQuery built around the object class
-	 * 
 	 * @see SelectQuery
 	 */
 	public <T> SelectQuery<T> select(Class<T> objectClass) {
@@ -371,7 +355,6 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class of the object for the InsertQuery
 	 * @return a InsertQuery built around the object class
-	 * 
 	 * @see InsertQuery
 	 */
 	public <T> InsertQuery<T> insert(Class<T> objectClass) {
@@ -390,7 +373,6 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class of the object for the UpdateQuery
 	 * @return a UpdateQuery built around the object class
-	 * 
 	 * @see UpdateQuery
 	 */
 	public <T> UpdateQuery<T> update(Class<T> objectClass) {
@@ -409,7 +391,6 @@ public abstract class Database {
 	 * @param objectClass
 	 *            the class of the object for the DeleteQuery
 	 * @return a DeleteQuery built around the object class
-	 * 
 	 * @see DeleteQuery
 	 */
 	public <T> DeleteQuery<T> delete(Class<T> objectClass) {

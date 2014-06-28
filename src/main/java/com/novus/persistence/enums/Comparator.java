@@ -1,7 +1,12 @@
 package com.novus.persistence.enums;
 
 /**
- * Provides the fundamental comparators to be used in building queries.
+ * Provides an enum representation of common comparators used in building
+ * different aspects of queries.
+ * <p>
+ * This class is an internal representation of the comparators used in different
+ * expressions. The enum is translated to the proper SQL code in the appropriate
+ * Provider for the database.
  * 
  * @author Jnani Weibel
  * @since 1.0.0

@@ -51,6 +51,7 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * @author Jnani Weibel
  * @see DataSource
  * @see Provider
+ * @see Connection
  * @since 1.0.0
  */
 public abstract class Database {

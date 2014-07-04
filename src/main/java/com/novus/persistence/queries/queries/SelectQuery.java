@@ -13,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -30,7 +29,7 @@ import com.novus.persistence.queries.clauses.HavingClause;
 import com.novus.persistence.queries.clauses.LimitClause;
 import com.novus.persistence.queries.clauses.OrderByClause;
 import com.novus.persistence.queries.clauses.WhereClause;
-import com.novus.persistence.queries.expression.Condition;
+import com.novus.persistence.queries.expression.Predicate;
 
 public class SelectQuery<T> extends Query<T> {
 	private final LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
@@ -68,14 +67,14 @@ public class SelectQuery<T> extends Query<T> {
 		return this;
 	}
 
-	public SelectQuery<T> where(Condition condition) {
-		where = new WhereClause(condition);
+	public SelectQuery<T> where(Predicate predicate) {
+		where = new WhereClause(predicate);
 
 		return this;
 	}
 
-	public SelectQuery<T> having(Condition condition) {
-		having = new HavingClause(condition);
+	public SelectQuery<T> having(Predicate predicate) {
+		having = new HavingClause(predicate);
 
 		return this;
 	}

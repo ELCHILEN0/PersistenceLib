@@ -34,7 +34,7 @@ import com.novus.persistence.queries.Query;
  * @see Database
  * @since 1.0.0
  */
-public interface Provider {
+public interface Composer {
 
 	/**
 	 * Returns a prepared statement based on the composition of the query.

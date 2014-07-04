@@ -9,7 +9,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.novus.persistence.databases.Database;
-import com.novus.persistence.databases.Provider;
+import com.novus.persistence.databases.Composer;
 import com.novus.persistence.enums.Comparator;
 import com.novus.persistence.enums.DataType;
 import com.novus.persistence.enums.Junction;
@@ -33,7 +33,7 @@ import com.novus.persistence.queries.queries.InsertQuery;
 import com.novus.persistence.queries.queries.SelectQuery;
 import com.novus.persistence.queries.queries.UpdateQuery;
 
-public class MySQLProvider implements Provider {
+public class MySQLComposer implements Composer {
 
 	private String clauseSQL(Clause c) {
 		if (c instanceof WhereClause) {

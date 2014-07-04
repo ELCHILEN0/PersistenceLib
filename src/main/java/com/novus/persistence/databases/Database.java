@@ -35,7 +35,7 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * database specific code can be implemented behind the Java layer. Extending
  * the class should be done in the following steps:
  * <ol>
- * <li>Redefine {@link #Database(DataSource, Provider)} to only require the
+ * <li>Redefine {@link #Database(DataSource, Composer)} to only require the
  * DataSource object.</li>
  * <li>Redefine {@link #connect()} to correctly establish a connection to a
  * database.
@@ -50,29 +50,29 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * 
  * @author Jnani Weibel
  * @see DataSource
- * @see Provider
+ * @see Composer
  * @see Connection
  * @since 1.0.0
  */
 public abstract class Database {
 	protected DataSource	source;
-	protected Provider		provider;
+	protected Composer		composer;
 
 	private boolean			logging	= false;
 
 	/**
 	 * Constructs a new {@link Database} object with the specified
-	 * {@link DataSource} and {@link Provider}.
+	 * {@link DataSource} and {@link Composer}.
 	 * 
 	 * @param configuration
 	 *            the configuration provides connection details to the Database
-	 * @param provider
+	 * @param composer
 	 *            the provider dictates which queries to execute in different
 	 *            situations for the Database
 	 */
-	protected Database(DataSource source, Provider provider) {
+	protected Database(DataSource source, Composer composer) {
 		this.source = source;
-		this.provider = provider;
+		this.composer = composer;
 	}
 
 	/**
@@ -95,12 +95,12 @@ public abstract class Database {
 	}
 
 	/**
-	 * Returns the {@link Provider} for the {@link Database}.
+	 * Returns the {@link Composer} for the {@link Database}.
 	 * 
 	 * @return the provider
 	 */
-	public Provider getProvider() {
-		return provider;
+	public Composer getProvider() {
+		return composer;
 	}
 
 	/**

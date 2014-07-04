@@ -19,7 +19,7 @@ import com.novus.persistence.internal.TableRegistration;
 public class MySQLDatabase extends Database {
 
 	public MySQLDatabase(DataSource source) throws InstantiationException {
-		super(source, new MySQLProvider());
+		super(source, new MySQLComposer());
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class MySQLDatabase extends Database {
 			ColumnRegistration column = table.getColumns().get(i);
 
 			// Build the column parameters:
-			String type = " " + provider.getDataType(column.getLength(), DataType.getDataType(column.getType()));
+			String type = " " + composer.getDataType(column.getLength(), DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT PRIMARY KEY" : "");
@@ -80,7 +80,7 @@ public class MySQLDatabase extends Database {
 					if (column.getName().equals(meta.getColumnName(i))) {
 						found = true;
 
-						if (!(provider.getDataType(column.getLength(), DataType.getDataType(column.getType())).equals(meta.getColumnTypeName(i)))) {
+						if (!(composer.getDataType(column.getLength(), DataType.getDataType(column.getType())).equals(meta.getColumnTypeName(i)))) {
 							toChange.add(column);
 							break;
 						}
@@ -96,7 +96,7 @@ public class MySQLDatabase extends Database {
 		}
 
 		for (ColumnRegistration column : toChange) {
-			String type = " " + provider.getDataType(column.getLength(), DataType.getDataType(column.getType()));
+			String type = " " + composer.getDataType(column.getLength(), DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
@@ -108,7 +108,7 @@ public class MySQLDatabase extends Database {
 		}
 
 		for (ColumnRegistration column : toAdd) {
-			String type = " " + provider.getDataType(column.getLength(), DataType.getDataType(column.getType()));
+			String type = " " + composer.getDataType(column.getLength(), DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");

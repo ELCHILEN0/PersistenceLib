@@ -25,7 +25,7 @@ public class Expression {
 
 		return this;
 	}
-
+	
 	// Predicates
 	public Condition equal(String col, Object val) {
 		return new BinaryCondition(this, col, val, Comparator.EQUAL);

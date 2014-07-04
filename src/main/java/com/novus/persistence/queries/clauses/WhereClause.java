@@ -1,16 +1,16 @@
 package com.novus.persistence.queries.clauses;
 
 import com.novus.persistence.queries.Clause;
-import com.novus.persistence.queries.expression.Condition;
+import com.novus.persistence.queries.expression.Predicate;
 
 public class WhereClause extends Clause {
-	private final Condition	condition;
+	private final Predicate	predicate;
 
-	public WhereClause(Condition condition) {
-		this.condition = condition;
+	public WhereClause(Predicate predicate) {
+		this.predicate = predicate;
 	}
 
-	public Condition getCondition() {
-		return condition;
+	public Predicate getPredicate() {
+		return predicate;
 	}
 }

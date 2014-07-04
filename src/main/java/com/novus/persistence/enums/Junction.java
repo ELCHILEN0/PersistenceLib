@@ -1,12 +1,9 @@
 package com.novus.persistence.enums;
 
 /**
- * Provides the fundamental junctions for joining two different clauses.
- * 
- * @author Jnani Weibel
- * @since 1.0.0
+ * @author Jnani
+ *
  */
 public enum Junction {
-	AND,
-	OR;
+	AND, OR;
 }

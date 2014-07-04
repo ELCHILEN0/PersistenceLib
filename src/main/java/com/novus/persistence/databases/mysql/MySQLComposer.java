@@ -25,15 +25,79 @@ import com.novus.persistence.queries.clauses.HavingClause;
 import com.novus.persistence.queries.clauses.LimitClause;
 import com.novus.persistence.queries.clauses.OrderByClause;
 import com.novus.persistence.queries.clauses.WhereClause;
-import com.novus.persistence.queries.expression.Condition;
-import com.novus.persistence.queries.expression.conditions.BinaryCondition;
-import com.novus.persistence.queries.expression.conditions.RawCondition;
+import com.novus.persistence.queries.expression.Predicate;
+import com.novus.persistence.queries.expression.predicates.BinaryPredicate;
+import com.novus.persistence.queries.expression.predicates.GroupedPredicate;
+import com.novus.persistence.queries.expression.predicates.RawPredicate;
 import com.novus.persistence.queries.queries.DeleteQuery;
 import com.novus.persistence.queries.queries.InsertQuery;
 import com.novus.persistence.queries.queries.SelectQuery;
 import com.novus.persistence.queries.queries.UpdateQuery;
 
 public class MySQLComposer implements Composer {
+
+	private String predicateToString(Predicate p) {
+		StringBuilder builder = new StringBuilder();
+
+		for (Predicate pre : p.getExpression().getPredicates()) {
+			if (pre.isNegated()) {
+				builder.append("NOT ");
+			}
+
+			builder.append("(");
+
+			if (pre instanceof GroupedPredicate) {
+				GroupedPredicate predicate = (GroupedPredicate) pre;
+
+				builder.append(predicateToString(predicate.getInner()));
+			} else if (pre instanceof BinaryPredicate) {
+				BinaryPredicate predicate = (BinaryPredicate) pre;
+
+				builder.append(predicate.getColumn() + "");
+			} else if (pre instanceof RawPredicate) {
+				RawPredicate predicate = (RawPredicate) pre;
+
+				builder.append(predicate.getSQL());
+			}
+
+			builder.append(")");
+
+			if (pre.getJunction() != null) {
+				Junction junction = pre.getJunction();
+
+				if (junction == Junction.AND) {
+					System.out.print(" OR ");
+				} else if (junction == Junction.OR) {
+					System.out.print(" AND ");
+				}
+			}
+
+		}
+
+		return builder.toString();
+	}
+	
+	private Object[] predicateToParams(Predicate p) {
+		Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
+		
+		for (Predicate pre : p.getExpression().getPredicates()) {
+			if (pre instanceof GroupedPredicate) {
+				GroupedPredicate predicate = (GroupedPredicate) pre;
+
+				objects = ArrayUtils.addAll(objects, predicateToParams(predicate.getInner()));
+			} else if (pre instanceof BinaryPredicate) {
+				BinaryPredicate predicate = (BinaryPredicate) pre;
+
+				objects = ArrayUtils.add(objects, predicate.getValue());
+			} else if (pre instanceof RawPredicate) {
+				RawPredicate predicate = (RawPredicate) pre;
+
+				objects = ArrayUtils.addAll(objects, predicate.getArgs());
+			}
+		}
+		
+		return objects;
+	}
 
 	private String clauseSQL(Clause c) {
 		if (c instanceof WhereClause) {
@@ -42,30 +106,7 @@ public class MySQLComposer implements Composer {
 			StringBuilder builder = new StringBuilder();
 
 			builder.append("WHERE ");
-
-			for (Condition con : clause.getCondition().getExpression().conditions) {
-				if (con.isNegated()) {
-					builder.append("NOT ");
-				}
-
-				if (con instanceof BinaryCondition) {
-					BinaryCondition condition = (BinaryCondition) con;
-
-					builder.append(condition.getColumn() + " " + getComparator(condition.getComparator()) + " ?");
-				} else if (con instanceof RawCondition) {
-					RawCondition condition = (RawCondition) con;
-
-					builder.append(condition.getSql());
-				}
-
-				if (con.getJunction() != null) {
-					if (con.getJunction() == Junction.AND) {
-						builder.append(" AND ");
-					} else if (con.getJunction() == Junction.OR) {
-						builder.append(" OR ");
-					}
-				}
-			}
+			builder.append(predicateToString(clause.getPredicate()));
 
 			return builder.toString();
 		} else if (c instanceof GroupByClause) {
@@ -82,26 +123,7 @@ public class MySQLComposer implements Composer {
 			StringBuilder builder = new StringBuilder();
 
 			builder.append("HAVING ");
-
-			for (Condition con : clause.getCondition().getExpression().conditions) {
-				if (con instanceof BinaryCondition) {
-					BinaryCondition condition = (BinaryCondition) con;
-
-					builder.append(condition.getColumn() + " " + getComparator(condition.getComparator()) + " ?");
-				} else if (con instanceof RawCondition) {
-					RawCondition condition = (RawCondition) con;
-
-					builder.append(condition.getSql());
-				}
-
-				if (con.getJunction() != null) {
-					if (con.getJunction() == Junction.AND) {
-						builder.append(" AND ");
-					} else if (con.getJunction() == Junction.OR) {
-						builder.append(" OR ");
-					}
-				}
-			}
+			builder.append(predicateToString(clause.getPredicate()));
 
 			return builder.toString();
 		} else if (c instanceof OrderByClause) {
@@ -129,39 +151,11 @@ public class MySQLComposer implements Composer {
 		if (c instanceof WhereClause) {
 			WhereClause clause = (WhereClause) c;
 
-			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
-
-			for (Condition con : clause.getCondition().getExpression().conditions) {
-				if (con instanceof BinaryCondition) {
-					BinaryCondition condition = (BinaryCondition) con;
-
-					objects = ArrayUtils.add(objects, condition.getValue());
-				} else if (con instanceof RawCondition) {
-					RawCondition condition = (RawCondition) con;
-
-					objects = ArrayUtils.addAll(objects, condition.getParams());
-				}
-			}
-
-			return objects;
+			return predicateToParams(clause.getPredicate());
 		} else if (c instanceof HavingClause) {
 			HavingClause clause = (HavingClause) c;
 
-			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
-
-			for (Condition con : clause.getCondition().getExpression().conditions) {
-				if (con instanceof BinaryCondition) {
-					BinaryCondition condition = (BinaryCondition) con;
-
-					objects = ArrayUtils.add(objects, condition.getValue());
-				} else if (con instanceof RawCondition) {
-					RawCondition condition = (RawCondition) con;
-
-					objects = ArrayUtils.addAll(objects, condition.getParams());
-				}
-			}
-
-			return objects;
+			return predicateToParams(clause.getPredicate());
 		}
 
 		return ArrayUtils.EMPTY_OBJECT_ARRAY;

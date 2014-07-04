@@ -3,51 +3,69 @@ package com.novus.persistence.queries.expression;
 import java.util.LinkedList;
 
 import com.novus.persistence.enums.Comparator;
-import com.novus.persistence.queries.expression.conditions.BinaryCondition;
-import com.novus.persistence.queries.expression.conditions.RawCondition;
+import com.novus.persistence.queries.expression.predicates.BinaryPredicate;
+import com.novus.persistence.queries.expression.predicates.GroupedPredicate;
+import com.novus.persistence.queries.expression.predicates.RawPredicate;
 
 /**
- * Provides an expression builder that allows the chaining of multiple
- * conditions and expressions to develop complex queries.
- * 
- * @author Jnani Weibel
+ * @author Jnani
+ *
  */
-public class Expression {
-	// A boolean representing if the expression is currently negating.
-	public boolean					negating	= false;
-
-	// A list of the conditions
-	public LinkedList<Condition>	conditions	= new LinkedList<Condition>();
-
-	// Expressions
-	public Expression not() {
-		this.negating = true;
-
+public class Expression {	
+	private LinkedList<Predicate> predicates = new LinkedList<>();
+	
+	private boolean negateNext = false;
+	
+	/**
+	 * Negate the next prefix of the expression.
+	 * <p>
+	 * 
+	 * @return the current expression
+	 */
+	public Expression not() {	
+		this.negateNext = true;
+		
 		return this;
 	}
+
+	// Grouped Predicate
+	public GroupedPredicate group(Predicate predicate) {				
+		return new GroupedPredicate(this, negateNext, predicate);
+	}
 	
-	// Predicates
-	public Condition equal(String col, Object val) {
-		return new BinaryCondition(this, col, val, Comparator.EQUAL);
+	// Binary Predicate
+	public BinaryPredicate equal(String column, Object value) {
+		return new BinaryPredicate(this, negateNext, column, Comparator.EQUAL, value);
 	}
-
-	public Condition lessThan(String col, Object val) {
-		return new BinaryCondition(this, col, val, Comparator.LESS_THAN);
+	
+	public BinaryPredicate lessThan(String column, Object value) {
+		return new BinaryPredicate(this, negateNext, column, Comparator.LESS_THAN, value);
 	}
-
-	public Condition lessThanOrEqual(String col, Object val) {
-		return new BinaryCondition(this, col, val, Comparator.LESS_THAN_OR_EQUAL);
+	
+	public BinaryPredicate lessThanOrEqual(String column, Object value) {		
+		return new BinaryPredicate(this, negateNext, column, Comparator.LESS_THAN_OR_EQUAL, value);
 	}
-
-	public Condition greaterThan(String col, Object val) {
-		return new BinaryCondition(this, col, val, Comparator.GREATER_THAN);
+	
+	public BinaryPredicate greaterThan(String column, Object value) {		
+		return new BinaryPredicate(this, negateNext, column, Comparator.GREATER_THAN, value);
 	}
-
-	public Condition greaterThanOrEqual(String col, Object val) {
-		return new BinaryCondition(this, col, val, Comparator.GREATER_THAN_OR_EQUAL);
+	
+	public BinaryPredicate greaterThanOrEqual(String column, Object value) {		
+		return new BinaryPredicate(this, negateNext, column, Comparator.GREATER_THAN_OR_EQUAL, value);
 	}
-
-	public Condition raw(String sql, Object... params) {
-		return new RawCondition(this, sql, params);
+	
+	// Raw Predicate
+	public RawPredicate raw(String sql, Object... args) {
+		return new RawPredicate(this, negateNext, sql, args);
 	}
+	
+	/**
+	 * Returns a list of all the predicates in this expression.
+	 * 
+	 * @return	the predicates
+	 */
+	public LinkedList<Predicate> getPredicates() {
+		return predicates;
+	}
+	
 }

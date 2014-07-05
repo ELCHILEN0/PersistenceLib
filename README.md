@@ -1,15 +1,14 @@
 PersistenceLib
 ==============
-
-PersistenceLib is an easy to use ORM (Object Relational Mapper).  It allows you to persist your POJO's directly to any database without having to struggle with queries and database structure!
+PersistenceLib is an annotation based ORM for persisting Java objects to any supported database without having to write different queries for every database.
 
 Documentation
 --------------
-
+No documentation has been added.
 
 Contributing
 --------------
-Please fork this repository and contribute any changes through pull requests!  This is an ever-evoloving library and any and all contributions are much appreciated!
+See [CONTRIBUTING.md](http://www.github.com/ELCHILEN0/PersistenceLib/CONTRIBUTING.md).
 
 License
 --------------

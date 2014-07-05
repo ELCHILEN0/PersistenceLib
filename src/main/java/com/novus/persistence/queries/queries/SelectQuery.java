@@ -32,7 +32,8 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Predicate;
 
 public class SelectQuery<T> extends Query<T> {
-	private final LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
+	private boolean						distinct	= false;
+	private final LinkedHashSet<String>	columns		= new LinkedHashSet<String>();
 	private WhereClause					where;
 	private GroupByClause				groupBy;
 	private HavingClause				having;

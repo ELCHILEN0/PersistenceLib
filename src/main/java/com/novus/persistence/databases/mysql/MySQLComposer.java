@@ -76,10 +76,10 @@ public class MySQLComposer implements Composer {
 
 		return builder.toString();
 	}
-	
+
 	private Object[] predicateToParams(Predicate p) {
 		Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
-		
+
 		for (Predicate pre : p.getExpression().getPredicates()) {
 			if (pre instanceof GroupedPredicate) {
 				GroupedPredicate predicate = (GroupedPredicate) pre;
@@ -95,7 +95,7 @@ public class MySQLComposer implements Composer {
 				objects = ArrayUtils.addAll(objects, predicate.getArgs());
 			}
 		}
-		
+
 		return objects;
 	}
 

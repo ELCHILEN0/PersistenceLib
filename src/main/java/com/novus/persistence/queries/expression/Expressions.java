@@ -4,7 +4,6 @@ import com.novus.persistence.queries.expression.predicates.GroupedPredicate;
 
 /**
  * @author Jnani
- *
  */
 public class Expressions {
 	// Expressions
@@ -16,7 +15,7 @@ public class Expressions {
 	public static GroupedPredicate group(Predicate predicate) {
 		return new Expression().group(predicate);
 	}
-	
+
 	// Binary Predicate
 	public static Predicate equal(String col, Object val) {
 		return new Expression().equal(col, val);
@@ -37,6 +36,6 @@ public class Expressions {
 	public static Predicate greaterThanOrEqual(String col, Object val) {
 		return new Expression().greaterThanOrEqual(col, val);
 	}
-	
+
 	// Condition
 }

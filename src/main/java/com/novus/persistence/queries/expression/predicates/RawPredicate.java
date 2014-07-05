@@ -5,12 +5,11 @@ import com.novus.persistence.queries.expression.Predicate;
 
 /**
  * @author Jnani
- *
  */
 public class RawPredicate extends Predicate {
-	private String sql;
-	private Object[] args;
-	
+	private String		sql;
+	private Object[]	args;
+
 	/**
 	 * 
 	 */
@@ -21,19 +20,19 @@ public class RawPredicate extends Predicate {
 	}
 
 	/**
-	 * @return	the sql
+	 * @return the sql
 	 */
 	public String getSQL() {
 		return sql;
 	}
-	
+
 	/**
-	 * @return	the args
+	 * @return the args
 	 */
 	public Object[] getArgs() {
 		return args;
 	}
-	
+
 	public String toString() {
 		return sql;
 	}

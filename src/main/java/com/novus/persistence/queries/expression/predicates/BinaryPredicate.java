@@ -8,9 +8,9 @@ import com.novus.persistence.queries.expression.Predicate;
  * @author Jnani
  */
 public class BinaryPredicate extends Predicate {
-	private String	column;
-	private Object	value;
-	private Comparator comparator;
+	private String		column;
+	private Object		value;
+	private Comparator	comparator;
 
 	public BinaryPredicate(Expression expression, boolean negated, String column, Comparator comparator, Object value) {
 		super(expression, negated);
@@ -19,23 +19,23 @@ public class BinaryPredicate extends Predicate {
 		this.value = value;
 		this.comparator = comparator;
 	}
-	
+
 	/**
-	 * @return	the column
+	 * @return the column
 	 */
 	public String getColumn() {
 		return column;
 	}
-	
+
 	/**
-	 * @return	the value
+	 * @return the value
 	 */
 	public Object getValue() {
 		return value;
 	}
-	
+
 	/**
-	 * @return	the comparator
+	 * @return the comparator
 	 */
 	public Comparator getComparator() {
 		return comparator;

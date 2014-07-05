@@ -2,7 +2,6 @@ package com.novus.persistence.queries.expression;
 
 import com.novus.persistence.enums.Junction;
 import com.novus.persistence.queries.expression.Expression;
-import com.novus.persistence.queries.expression.junction.JunctionType;
 
 /**
  * @author Jnani

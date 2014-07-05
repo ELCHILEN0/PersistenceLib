@@ -8,7 +8,7 @@ No documentation has been added.
 
 Contributing
 --------------
-See [CONTRIBUTING.md](http://www.github.com/ELCHILEN0/PersistenceLib/CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/ELCHILEN0/PersistenceLib/blob/master/CONTRIBUTING.md).
 
 License
 --------------

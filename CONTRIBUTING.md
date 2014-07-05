@@ -15,10 +15,10 @@ If you fixed a specific bug or implemented a specific change request, I also rec
 Here are some examples of good commit messages:
 
 	Changed paragraph separation from indentation to vertical space.
-    	Fix: Extra image removed.
-    	Fix: CSS patched to give better results when embedded in javadoc.
-    	Add: A javadoc {@link} tag in the lyx, just to show it's possible.
-    	...
-    	Fix: Fixed bug #1938.
-    	Add: Implemented change request #39381.
+		Fix: Extra image removed.
+		Fix: CSS patched to give better results when embedded in javadoc.
+		Add: A javadoc {@link} tag in the lyx, just to show it's possible.
+		...
+		Fix: Fixed bug #1938.
+		Add: Implemented change request #39381.
     

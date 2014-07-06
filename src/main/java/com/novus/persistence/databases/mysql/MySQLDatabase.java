@@ -51,6 +51,10 @@ public class MySQLDatabase extends Database {
 
 		query += ")";
 
+		if (this.isLogging()) {
+			System.out.println(query);
+		}
+
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.execute();
 		}

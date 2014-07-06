@@ -94,7 +94,9 @@ public class RegistrationFactory {
 		List<ColumnRegistration> columns = new LinkedList<ColumnRegistration>();
 
 		for (Field field : clazz.getDeclaredFields()) {
-			columns.add(RegistrationFactory.getColumnRegistration(field));
+			try {
+				columns.add(RegistrationFactory.getColumnRegistration(field));
+			} catch (ColumnRegistrationException e) {}
 		}
 
 		return columns;

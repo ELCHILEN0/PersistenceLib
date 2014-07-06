@@ -53,7 +53,7 @@ public class MySQLComposer implements Composer {
 			} else if (pre instanceof BinaryPredicate) {
 				BinaryPredicate predicate = (BinaryPredicate) pre;
 
-				builder.append(predicate.getColumn() + "");
+				builder.append(predicate.getColumn() + " " + getComparator(predicate.getComparator()) + " ?");
 			} else if (pre instanceof RawPredicate) {
 				RawPredicate predicate = (RawPredicate) pre;
 
@@ -262,6 +262,10 @@ public class MySQLComposer implements Composer {
 			sql = sql.replace("{ ORDER_BY }", clauseSQL(query.getOrderBy()));
 			sql = sql.replace("{ LIMIT }", clauseSQL(query.getLimit()));
 
+			if (database.isLogging()) {
+				System.out.println(sql);
+			}
+			
 			PreparedStatement statement = connection.prepareStatement(sql);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -318,7 +322,7 @@ public class MySQLComposer implements Composer {
 				case CHAR:
 					return "CHAR";
 				case STRING:
-					return "VARCHAR";
+					return "VARCHAR(255)";
 				case BOOLEAN:
 					return "BIT";
 				case BYTE:

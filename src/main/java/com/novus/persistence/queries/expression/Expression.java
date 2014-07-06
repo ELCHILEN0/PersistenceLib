@@ -50,8 +50,7 @@ public class Expression {
 	}
 
 	public BinaryPredicate greaterThanOrEqual(String column, Object value) {
-		return new BinaryPredicate(this, negateNext, column, Comparator.GREATER_THAN_OR_EQUAL,
-				value);
+		return new BinaryPredicate(this, negateNext, column, Comparator.GREATER_THAN_OR_EQUAL, value);
 	}
 
 	// Raw Predicate

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import com.novus.persistence.databases.Database;
 import com.novus.persistence.queries.Query;
 import com.novus.persistence.queries.clauses.WhereClause;
-import com.novus.persistence.queries.expression.Condition;
+import com.novus.persistence.queries.expression.Predicate;
 
 public class DeleteQuery<T> extends Query<T> {
 	protected WhereClause where;
@@ -16,8 +16,8 @@ public class DeleteQuery<T> extends Query<T> {
 		super(database, objectClass);
 	}
 
-	public DeleteQuery<T> where(Condition condition) {
-		where = new WhereClause(condition);
+	public DeleteQuery<T> where(Predicate predicate) {
+		where = new WhereClause(predicate);
 
 		return this;
 	}

@@ -109,8 +109,7 @@ public abstract class Database {
 	 *            the class the table definition is based on
 	 * @throws SQLException
 	 */
-	public abstract void createStructure(Connection connection, Class<?> objectClass)
-			throws SQLException;
+	public abstract void createStructure(Connection connection, Class<?> objectClass) throws SQLException;
 
 	/**
 	 * Updates an existing table in the database based on the table structure defined in a specific
@@ -127,8 +126,7 @@ public abstract class Database {
 	 *            the class the table definition is based on
 	 * @throws SQLException
 	 */
-	public abstract void updateStructure(Connection connection, Class<?> objectClass)
-			throws SQLException;
+	public abstract void updateStructure(Connection connection, Class<?> objectClass) throws SQLException;
 
 	/**
 	 * Returns a single object from the database with the given id or <code>null</code> if the
@@ -168,9 +166,7 @@ public abstract class Database {
 		try {
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
-			SelectQuery<T> query =
-					select(objectClass).where(
-							equal(table.getId().getName(), table.getId().getValue(id)));
+			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), table.getId().getValue(id)));
 
 			return query.findOne(connection);
 		} catch (Exception e) {
@@ -211,27 +207,20 @@ public abstract class Database {
 
 			if (table.getId().getValue(object) == null) {
 				@SuppressWarnings("unchecked")
-				InsertQuery<T> query =
-						insert((Class<T>) object.getClass()).columns(columns).values(values);
+				InsertQuery<T> query = insert((Class<T>) object.getClass()).columns(columns).values(values);
 
 				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			} else {
 				@SuppressWarnings("unchecked")
-				UpdateQuery<T> query =
-						update((Class<T>) object.getClass())
-								.columns(columns)
-								.values(values)
-								.where(equal(table.getId().getName(), table.getId()
-										.getValue(object)));
+				UpdateQuery<T> query = update((Class<T>) object.getClass()).columns(columns).values(values).where(equal(table.getId().getName(), table.getId().getValue(object)));
 
 				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			}
 
 			if ((generatedKeys != null) && generatedKeys.next()) {
-				if ((table.getId().getType() == Integer.class)
-						|| (table.getId().getType() == int.class)) {
+				if ((table.getId().getType() == Integer.class) || (table.getId().getType() == int.class)) {
 					table.getId().setValue(object, generatedKeys.getInt(1));
 				} else {
 					table.getId().setValue(object, generatedKeys.getObject(1));
@@ -258,9 +247,7 @@ public abstract class Database {
 			TableRegistration table = RegistrationFactory.getTableRegistration(object.getClass());
 
 			@SuppressWarnings("unchecked")
-			DeleteQuery<T> query =
-					delete((Class<T>) object.getClass()).where(
-							equal(table.getId().getName(), table.getId().getValue(object)));
+			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(equal(table.getId().getName(), table.getId().getValue(object)));
 
 			return query.execute(connection);
 		} catch (Exception e) {

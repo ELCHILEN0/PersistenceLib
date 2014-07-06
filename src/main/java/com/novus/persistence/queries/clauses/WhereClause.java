@@ -4,7 +4,7 @@ import com.novus.persistence.queries.Clause;
 import com.novus.persistence.queries.expression.Predicate;
 
 public class WhereClause extends Clause {
-	private final Predicate predicate;
+	private Predicate predicate;
 
 	public WhereClause(Predicate predicate) {
 		this.predicate = predicate;

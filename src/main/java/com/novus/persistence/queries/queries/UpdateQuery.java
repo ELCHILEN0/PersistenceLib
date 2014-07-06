@@ -12,7 +12,7 @@ import org.apache.commons.lang.ArrayUtils;
 import com.novus.persistence.databases.Database;
 import com.novus.persistence.queries.Query;
 import com.novus.persistence.queries.clauses.WhereClause;
-import com.novus.persistence.queries.expression.Condition;
+import com.novus.persistence.queries.expression.Predicate;
 
 public class UpdateQuery<T> extends Query<T> {
 	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
@@ -24,8 +24,8 @@ public class UpdateQuery<T> extends Query<T> {
 		super(database, objectClass);
 	}
 
-	public UpdateQuery<T> where(Condition condition) {
-		where = new WhereClause(condition);
+	public UpdateQuery<T> where(Predicate predicate) {
+		where = new WhereClause(predicate);
 
 		return this;
 	}

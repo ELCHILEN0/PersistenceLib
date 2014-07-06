@@ -92,7 +92,8 @@ public class SelectQuery<T> extends Query<T> {
 	}
 
 	public T findOne(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -125,7 +126,8 @@ public class SelectQuery<T> extends Query<T> {
 	}
 
 	public List<T> findList(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -162,7 +164,8 @@ public class SelectQuery<T> extends Query<T> {
 	}
 
 	public Set<T> findSet(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -199,7 +202,8 @@ public class SelectQuery<T> extends Query<T> {
 	}
 
 	public HashMap<String, Object> findMap(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();
@@ -230,7 +234,8 @@ public class SelectQuery<T> extends Query<T> {
 	}
 
 	public List<HashMap<String, Object>> findMapList(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
+		try {
+			PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
 			ResultSet result = statement.executeQuery();

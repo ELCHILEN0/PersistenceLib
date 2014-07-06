@@ -51,13 +51,12 @@ public class InsertQuery<T> extends Query<T> {
 	}
 
 	public boolean execute(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			statement.executeUpdate();
+		PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
+		statement.executeUpdate();
 
-			generatedKeys = statement.getGeneratedKeys();
+		generatedKeys = statement.getGeneratedKeys();
 
-			return true;
-		}
+		return true;
 	}
 
 	public HashMap<String, Object> getMap() {

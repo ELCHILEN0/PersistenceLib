@@ -23,11 +23,10 @@ public class DeleteQuery<T> extends Query<T> {
 	}
 
 	public boolean execute(Connection connection) throws SQLException {
-		try (PreparedStatement statement = database.getProvider().prepareQuery(connection, this)) {
-			statement.executeUpdate();
+		PreparedStatement statement = database.getProvider().prepareQuery(connection, this);
+		statement.executeUpdate();
 
-			return true;
-		}
+		return true;
 	}
 
 	public WhereClause getWhere() {

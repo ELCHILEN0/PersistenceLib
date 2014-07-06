@@ -7,6 +7,5 @@ package com.novus.persistence.enums;
  * @since 1.0.0
  */
 public enum Order {
-	ASC,
-	DESC;
+	ASC, DESC;
 }

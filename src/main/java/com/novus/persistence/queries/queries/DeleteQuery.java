@@ -10,7 +10,7 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
 
 public class DeleteQuery<T> extends Query<T> {
-	protected WhereClause	where;
+	protected WhereClause where;
 
 	public DeleteQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);

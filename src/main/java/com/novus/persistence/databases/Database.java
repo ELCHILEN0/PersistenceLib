@@ -22,30 +22,25 @@ import com.novus.persistence.queries.queries.SelectQuery;
 import com.novus.persistence.queries.queries.UpdateQuery;
 
 /**
- * Provides a layer for interacting with a database without writing code
- * specific to each type of database.
- * <p>
- * Supports select, insert, update and delete queries on tables in the database
- * through a fluid Java syntax. Each Database contains a DataSource and a
- * Provider. The DataSource provides connections to a database.The purpose of
- * the Provider is to provide built queries specific to the particular type of
+ * Provides a layer for interacting with a database without writing code specific to each type of
  * database.
  * <p>
- * This class is designed to be extended for different databases so that the
- * database specific code can be implemented behind the Java layer. Extending
- * the class should be done in the following steps:
+ * Supports select, insert, update and delete queries on tables in the database through a fluid Java
+ * syntax. Each Database contains a DataSource and a Provider. The DataSource provides connections
+ * to a database.The purpose of the Provider is to provide built queries specific to the particular
+ * type of database.
+ * <p>
+ * This class is designed to be extended for different databases so that the database specific code
+ * can be implemented behind the Java layer. Extending the class should be done in the following
+ * steps:
  * <ol>
- * <li>Redefine {@link #Database(DataSource, Composer)} to only require the
- * DataSource object.</li>
- * <li>Redefine {@link #connect()} to correctly establish a connection to a
- * database.
+ * <li>Redefine {@link #Database(DataSource, Composer)} to only require the DataSource object.</li>
+ * <li>Redefine {@link #connect()} to correctly establish a connection to a database.
  * <li>
- * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection
- * from the database.</li>
- * <li>Redefine the {@link #createTableStructure(Class)} to correctly creates in
- * the database.</li>
- * <li>Redefine the {@link #updateTableStructure(Class)} to correctly update
- * table structure in the database.</li>
+ * <li>Redefine the {@link #disconnect()} to correctly relinquish the connection from the database.</li>
+ * <li>Redefine the {@link #createTableStructure(Class)} to correctly creates in the database.</li>
+ * <li>Redefine the {@link #updateTableStructure(Class)} to correctly update table structure in the
+ * database.</li>
  * </ol>
  * 
  * @author Jnani Weibel
@@ -55,20 +50,20 @@ import com.novus.persistence.queries.queries.UpdateQuery;
  * @since 1.0.0
  */
 public abstract class Database {
-	protected DataSource	source;
-	protected Composer		composer;
+	protected DataSource source;
+	protected Composer composer;
 
-	private boolean			logging	= false;
+	private boolean logging = false;
 
 	/**
-	 * Constructs a new {@link Database} object with the specified
-	 * {@link DataSource} and {@link Composer}.
+	 * Constructs a new {@link Database} object with the specified {@link DataSource} and
+	 * {@link Composer}.
 	 * 
 	 * @param configuration
 	 *            the configuration provides connection details to the Database
 	 * @param composer
-	 *            the provider dictates which queries to execute in different
-	 *            situations for the Database
+	 *            the provider dictates which queries to execute in different situations for the
+	 *            Database
 	 */
 	protected Database(DataSource source, Composer composer) {
 		this.source = source;
@@ -104,41 +99,40 @@ public abstract class Database {
 	}
 
 	/**
-	 * Creates a table in the database based on the table structure defined in a
-	 * specific class.
+	 * Creates a table in the database based on the table structure defined in a specific class.
 	 * <p>
-	 * The class should be properly annotated in order to be able to create the
-	 * structure correctly. This method should only be called once if the table
-	 * does not already exist in the database; otherwise, use
-	 * {@link #updateStructure(Class)}.
+	 * The class should be properly annotated in order to be able to create the structure correctly.
+	 * This method should only be called once if the table does not already exist in the database;
+	 * otherwise, use {@link #updateStructure(Class)}.
 	 * 
 	 * @param objectClass
 	 *            the class the table definition is based on
 	 * @throws SQLException
 	 */
-	public abstract void createStructure(Connection connection, Class<?> objectClass) throws SQLException;
+	public abstract void createStructure(Connection connection, Class<?> objectClass)
+			throws SQLException;
 
 	/**
-	 * Updates an existing table in the database based on the table structure
-	 * defined in a specific class.
+	 * Updates an existing table in the database based on the table structure defined in a specific
+	 * class.
 	 * <p>
-	 * The class should be properly annotated in order to be able to update the
-	 * structure correctly. This method should only be called if the table not
-	 * already exists in the database; otherwise, use
-	 * {@link #createStructure(Class)}.
+	 * The class should be properly annotated in order to be able to update the structure correctly.
+	 * This method should only be called if the table not already exists in the database; otherwise,
+	 * use {@link #createStructure(Class)}.
 	 * <p>
-	 * Changes the definitions of already defined columns. Adds columns which
-	 * are not already defined in the table.
+	 * Changes the definitions of already defined columns. Adds columns which are not already
+	 * defined in the table.
 	 * 
 	 * @param objectClass
 	 *            the class the table definition is based on
 	 * @throws SQLException
 	 */
-	public abstract void updateStructure(Connection connection, Class<?> objectClass) throws SQLException;
+	public abstract void updateStructure(Connection connection, Class<?> objectClass)
+			throws SQLException;
 
 	/**
-	 * Returns a single object from the database with the given id or
-	 * <code>null</code> if the object doesn't exist.
+	 * Returns a single object from the database with the given id or <code>null</code> if the
+	 * object doesn't exist.
 	 * 
 	 * @param objectClass
 	 *            the class of the object that will be returned
@@ -161,8 +155,8 @@ public abstract class Database {
 	}
 
 	/**
-	 * Returns a single object from the database with the given id or
-	 * <code>null</code> if the object doesn't exist.
+	 * Returns a single object from the database with the given id or <code>null</code> if the
+	 * object doesn't exist.
 	 * 
 	 * @param objectClass
 	 *            the class of the object that will be returned
@@ -174,7 +168,9 @@ public abstract class Database {
 		try {
 			TableRegistration table = RegistrationFactory.getTableRegistration(objectClass);
 
-			SelectQuery<T> query = select(objectClass).where(equal(table.getId().getName(), table.getId().getValue(id)));
+			SelectQuery<T> query =
+					select(objectClass).where(
+							equal(table.getId().getName(), table.getId().getValue(id)));
 
 			return query.findOne(connection);
 		} catch (Exception e) {
@@ -187,13 +183,12 @@ public abstract class Database {
 	/**
 	 * Saves the object to the appropriate table in the database.
 	 * <p>
-	 * If the object's id has not yet been set then the object will be inserted
-	 * into the database; otherwise, the object's data will be updated.
+	 * If the object's id has not yet been set then the object will be inserted into the database;
+	 * otherwise, the object's data will be updated.
 	 * 
 	 * @param object
 	 *            the object to save
-	 * @return <code>true</code> if the save was successful; <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the save was successful; <code>false</code> otherwise.
 	 */
 	public <T> boolean save(Connection connection, T object) {
 		try {
@@ -216,20 +211,27 @@ public abstract class Database {
 
 			if (table.getId().getValue(object) == null) {
 				@SuppressWarnings("unchecked")
-				InsertQuery<T> query = insert((Class<T>) object.getClass()).columns(columns).values(values);
+				InsertQuery<T> query =
+						insert((Class<T>) object.getClass()).columns(columns).values(values);
 
 				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			} else {
 				@SuppressWarnings("unchecked")
-				UpdateQuery<T> query = update((Class<T>) object.getClass()).columns(columns).values(values).where(equal(table.getId().getName(), table.getId().getValue(object)));
+				UpdateQuery<T> query =
+						update((Class<T>) object.getClass())
+								.columns(columns)
+								.values(values)
+								.where(equal(table.getId().getName(), table.getId()
+										.getValue(object)));
 
 				success = query.execute(connection);
 				generatedKeys = query.getGeneratedKeys();
 			}
 
 			if ((generatedKeys != null) && generatedKeys.next()) {
-				if ((table.getId().getType() == Integer.class) || (table.getId().getType() == int.class)) {
+				if ((table.getId().getType() == Integer.class)
+						|| (table.getId().getType() == int.class)) {
 					table.getId().setValue(object, generatedKeys.getInt(1));
 				} else {
 					table.getId().setValue(object, generatedKeys.getObject(1));
@@ -249,15 +251,16 @@ public abstract class Database {
 	 * 
 	 * @param object
 	 *            the object to drop
-	 * @return <code>true</code> if the drop was successful; <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the drop was successful; <code>false</code> otherwise.
 	 */
 	public <T> boolean drop(Connection connection, T object) {
 		try {
 			TableRegistration table = RegistrationFactory.getTableRegistration(object.getClass());
 
 			@SuppressWarnings("unchecked")
-			DeleteQuery<T> query = delete((Class<T>) object.getClass()).where(equal(table.getId().getName(), table.getId().getValue(object)));
+			DeleteQuery<T> query =
+					delete((Class<T>) object.getClass()).where(
+							equal(table.getId().getName(), table.getId().getValue(object)));
 
 			return query.execute(connection);
 		} catch (Exception e) {
@@ -289,8 +292,8 @@ public abstract class Database {
 	/**
 	 * Saves multiple objects to their appropriate tables in the database.
 	 * <p>
-	 * Iterates over a group of objects calling the {@link #save(Object)} method
-	 * for each individual object.
+	 * Iterates over a group of objects calling the {@link #save(Object)} method for each individual
+	 * object.
 	 * 
 	 * @param objects
 	 *            the objects to save
@@ -306,8 +309,8 @@ public abstract class Database {
 	/**
 	 * Drops multiple objects from their appropriate tables in the database.
 	 * <p>
-	 * Iterates over a group of objects calling the {@link #drop(Object)} method
-	 * for each individual object.
+	 * Iterates over a group of objects calling the {@link #drop(Object)} method for each individual
+	 * object.
 	 * 
 	 * @param objects
 	 *            the objects to drop
@@ -321,13 +324,12 @@ public abstract class Database {
 	}
 
 	/**
-	 * Creates a {@link SelectQuery} that can be used to build a select
-	 * statement to query the appropriate table in the database. The SelectQuery
-	 * will fetch data from the table specified in the object classes table
-	 * definition.
+	 * Creates a {@link SelectQuery} that can be used to build a select statement to query the
+	 * appropriate table in the database. The SelectQuery will fetch data from the table specified
+	 * in the object classes table definition.
 	 * <p>
-	 * Calling this method does not immediately query the database. Execution of
-	 * a SelectQuery can be done in any of the following ways:
+	 * Calling this method does not immediately query the database. Execution of a SelectQuery can
+	 * be done in any of the following ways:
 	 * <ol>
 	 * <li>{@link SelectQuery#findOne()}</li>
 	 * <li>{@link SelectQuery#findList()}</li>
@@ -345,13 +347,12 @@ public abstract class Database {
 	}
 
 	/**
-	 * Creates an {@link InsertQuery} that can be used to build an insert
-	 * statement for the appropriate table in the database. The InsertQuery will
-	 * insert data into the table specified in the object classes table
-	 * definition.
+	 * Creates an {@link InsertQuery} that can be used to build an insert statement for the
+	 * appropriate table in the database. The InsertQuery will insert data into the table specified
+	 * in the object classes table definition.
 	 * <p>
-	 * Calling this method does not immediately execute the statement. Execution
-	 * of an InsertQuery can be done by calling {@link InsertQuery#execute()}.
+	 * Calling this method does not immediately execute the statement. Execution of an InsertQuery
+	 * can be done by calling {@link InsertQuery#execute()}.
 	 * 
 	 * @param objectClass
 	 *            the class of the object for the InsertQuery
@@ -363,13 +364,12 @@ public abstract class Database {
 	}
 
 	/**
-	 * Creates an {@link UpdateQuery} that can be used to build an update
-	 * statement for the appropriate table in the database. The UpdateQuery will
-	 * update data in the table specified in the object classes table
-	 * definition.
+	 * Creates an {@link UpdateQuery} that can be used to build an update statement for the
+	 * appropriate table in the database. The UpdateQuery will update data in the table specified in
+	 * the object classes table definition.
 	 * <p>
-	 * Calling this method does not immediately execute the statement. Execution
-	 * of an UpdateQuery can be done by calling {@link UpdateQuery#execute()}.
+	 * Calling this method does not immediately execute the statement. Execution of an UpdateQuery
+	 * can be done by calling {@link UpdateQuery#execute()}.
 	 * 
 	 * @param objectClass
 	 *            the class of the object for the UpdateQuery
@@ -381,13 +381,12 @@ public abstract class Database {
 	}
 
 	/**
-	 * Creates a {@link DeleteQuery} that can be used to build a delete
-	 * statement for the appropriate table in the database. The DeleteQuery will
-	 * delete records from the table specified in the object classes table
-	 * definition.
+	 * Creates a {@link DeleteQuery} that can be used to build a delete statement for the
+	 * appropriate table in the database. The DeleteQuery will delete records from the table
+	 * specified in the object classes table definition.
 	 * <p>
-	 * Calling this method does not immediately execute the statement. Execution
-	 * of an DeleteQuery can be done by calling {@link DeleteQuery#execute()}.
+	 * Calling this method does not immediately execute the statement. Execution of an DeleteQuery
+	 * can be done by calling {@link DeleteQuery#execute()}.
 	 * 
 	 * @param objectClass
 	 *            the class of the object for the DeleteQuery
@@ -415,8 +414,7 @@ public abstract class Database {
 	/**
 	 * Returns <code>true</code> if logging is enabled.
 	 * 
-	 * @return <code>true</code> if logging is enabled; <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if logging is enabled; <code>false</code> otherwise.
 	 */
 	public boolean isLogging() {
 		return logging;

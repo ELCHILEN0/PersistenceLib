@@ -13,8 +13,8 @@ import com.novus.persistence.databases.Database;
 import com.novus.persistence.queries.Query;
 
 public class InsertQuery<T> extends Query<T> {
-	private LinkedHashMap<String, Object>	map	= new LinkedHashMap<String, Object>();
-	private ResultSet						generatedKeys;
+	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+	private ResultSet generatedKeys;
 
 	public InsertQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);

@@ -1,7 +1,7 @@
 package com.novus.persistence.exceptions;
 
 public class TableRegistrationException extends Exception {
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = 1L;
 
 	public TableRegistrationException(String message) {
 		super(message);

@@ -11,9 +11,9 @@ import com.novus.persistence.queries.expression.predicates.RawPredicate;
  * @author Jnani
  */
 public class Expression {
-	private LinkedList<Predicate>	predicates	= new LinkedList<>();
+	private LinkedList<Predicate> predicates = new LinkedList<>();
 
-	private boolean					negateNext	= false;
+	private boolean negateNext = false;
 
 	/**
 	 * Negate the next prefix of the expression.
@@ -50,7 +50,8 @@ public class Expression {
 	}
 
 	public BinaryPredicate greaterThanOrEqual(String column, Object value) {
-		return new BinaryPredicate(this, negateNext, column, Comparator.GREATER_THAN_OR_EQUAL, value);
+		return new BinaryPredicate(this, negateNext, column, Comparator.GREATER_THAN_OR_EQUAL,
+				value);
 	}
 
 	// Raw Predicate

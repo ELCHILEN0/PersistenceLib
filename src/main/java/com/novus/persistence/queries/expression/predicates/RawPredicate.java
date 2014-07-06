@@ -7,8 +7,8 @@ import com.novus.persistence.queries.expression.Predicate;
  * @author Jnani
  */
 public class RawPredicate extends Predicate {
-	private String		sql;
-	private Object[]	args;
+	private String sql;
+	private Object[] args;
 
 	/**
 	 * 

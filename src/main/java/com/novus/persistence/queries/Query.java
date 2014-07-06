@@ -3,8 +3,8 @@ package com.novus.persistence.queries;
 import com.novus.persistence.databases.Database;
 
 public class Query<T> {
-	protected Database	database;
-	protected Class<T>	objectClass;
+	protected Database database;
+	protected Class<T> objectClass;
 
 	public Query(Database database, Class<T> objectClass) {
 		this.database = database;
@@ -12,8 +12,8 @@ public class Query<T> {
 	}
 
 	/**
-	 * Allows dynamic runtime changing of the database. This enables a query to
-	 * be reused with multiple database instances.
+	 * Allows dynamic runtime changing of the database. This enables a query to be reused with
+	 * multiple database instances.
 	 * 
 	 * @param database
 	 */

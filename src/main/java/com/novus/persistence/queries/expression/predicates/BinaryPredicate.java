@@ -8,11 +8,12 @@ import com.novus.persistence.queries.expression.Predicate;
  * @author Jnani
  */
 public class BinaryPredicate extends Predicate {
-	private String		column;
-	private Object		value;
-	private Comparator	comparator;
+	private String column;
+	private Object value;
+	private Comparator comparator;
 
-	public BinaryPredicate(Expression expression, boolean negated, String column, Comparator comparator, Object value) {
+	public BinaryPredicate(Expression expression, boolean negated, String column,
+			Comparator comparator, Object value) {
 		super(expression, negated);
 
 		this.column = column;

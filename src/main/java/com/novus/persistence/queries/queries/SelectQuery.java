@@ -32,13 +32,13 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Predicate;
 
 public class SelectQuery<T> extends Query<T> {
-	private boolean						distinct	= false;
-	private final LinkedHashSet<String>	columns		= new LinkedHashSet<String>();
-	private WhereClause					where;
-	private GroupByClause				groupBy;
-	private HavingClause				having;
-	private OrderByClause				orderBy;
-	private LimitClause					limit;
+	private boolean distinct = false;
+	private final LinkedHashSet<String> columns = new LinkedHashSet<String>();
+	private WhereClause where;
+	private GroupByClause groupBy;
+	private HavingClause having;
+	private OrderByClause orderBy;
+	private LimitClause limit;
 
 	public SelectQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);

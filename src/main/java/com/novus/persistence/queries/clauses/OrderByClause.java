@@ -8,8 +8,8 @@ import com.novus.persistence.enums.Order;
 import com.novus.persistence.queries.Clause;
 
 public class OrderByClause extends Clause {
-	private final Order					order;
-	private final LinkedHashSet<String>	columns	= new LinkedHashSet<String>();
+	private final Order order;
+	private final LinkedHashSet<String> columns = new LinkedHashSet<String>();
 
 	public OrderByClause(Order order, String... columns) {
 		this.order = order;

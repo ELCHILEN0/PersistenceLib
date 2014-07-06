@@ -5,8 +5,8 @@ import java.lang.reflect.Field;
 import com.novus.persistence.annotations.Column;
 
 public class ColumnRegistration {
-	private Field	field		= null;
-	private Column	annotation	= null;
+	private Field field = null;
+	private Column annotation = null;
 
 	public ColumnRegistration(Field field, Column annotation) {
 		this.field = field;

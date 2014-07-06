@@ -131,7 +131,8 @@ public class MySQLComposer implements Composer {
 
 			StringBuilder builder = new StringBuilder();
 
-			builder.append("ORDER BY " + StringUtils.join(clause.getColumns(), ", ") + " " + getOrder(clause.getOrder()));
+			builder.append("ORDER BY " + StringUtils.join(clause.getColumns(), ", ") + " "
+					+ getOrder(clause.getOrder()));
 
 			return builder.toString();
 		} else if (c instanceof LimitClause) {
@@ -162,7 +163,8 @@ public class MySQLComposer implements Composer {
 	}
 
 	@Override
-	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q) throws SQLException {
+	public <T> PreparedStatement prepareQuery(Connection connection, Query<T> q)
+			throws SQLException {
 		Database database = q.getDatabase();
 
 		TableRegistration table = null;
@@ -178,13 +180,16 @@ public class MySQLComposer implements Composer {
 
 			sql = sql.replace("{ TABLE }", table.getName());
 			sql = sql.replace("{ COLUMNS }", StringUtils.join(query.getColumns(), ", "));
-			sql = sql.replace("{ VALUES }", StringUtils.join(query.getColumns(), ", ").replaceAll("[^\\s*,]+", "?"));
+			sql =
+					sql.replace("{ VALUES }", StringUtils.join(query.getColumns(), ", ")
+							.replaceAll("[^\\s*,]+", "?"));
 
 			if (database.isLogging()) {
 				System.out.println(sql);
 			}
 
-			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement =
+					connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
@@ -203,14 +208,17 @@ public class MySQLComposer implements Composer {
 			String sql = "UPDATE { TABLE } SET { COLUMNS_AND_VALUES } { WHERE }";
 
 			sql = sql.replace("{ TABLE }", table.getName());
-			sql = sql.replace("{ COLUMNS_AND_VALUES }", StringUtils.join(query.getColumns(), " = ?, ") + " = ?");
+			sql =
+					sql.replace("{ COLUMNS_AND_VALUES }",
+							StringUtils.join(query.getColumns(), " = ?, ") + " = ?");
 			sql = sql.replace("{ WHERE }", clauseSQL(query.getWhere()));
 
 			if (database.isLogging()) {
 				System.out.println(sql);
 			}
 
-			PreparedStatement statement = connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement statement =
+					connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS);
 
 			Object[] objects = ArrayUtils.EMPTY_OBJECT_ARRAY;
 			objects = ArrayUtils.addAll(objects, query.getValues());
@@ -252,10 +260,15 @@ public class MySQLComposer implements Composer {
 			return statement;
 		} else if (q instanceof SelectQuery<?>) {
 			SelectQuery<T> query = (SelectQuery<T>) q;
-			String sql = "SELECT { FILTERS } FROM { TABLE } { WHERE } { GROUP_BY } { HAVING } { ORDER_BY } { LIMIT }";
+			String sql =
+					"SELECT { FILTERS } FROM { TABLE } { WHERE } { GROUP_BY } { HAVING } { ORDER_BY } { LIMIT }";
 
 			sql = sql.replace("{ TABLE }", table.getName());
-			sql = sql.replace("{ FILTERS }", (query.getColumns().size() > 0 ? StringUtils.join(query.getColumns(), ", ") : "*"));
+			sql =
+					sql.replace(
+							"{ FILTERS }",
+							(query.getColumns().size() > 0 ? StringUtils.join(query.getColumns(),
+									", ") : "*"));
 			sql = sql.replace("{ WHERE }", clauseSQL(query.getWhere()));
 			sql = sql.replace("{ GROUP_BY }", clauseSQL(query.getGroupBy()));
 			sql = sql.replace("{ HAVING }", clauseSQL(query.getHaving()));

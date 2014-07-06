@@ -36,6 +36,4 @@ public class Expressions {
 	public static Predicate greaterThanOrEqual(String col, Object val) {
 		return new Expression().greaterThanOrEqual(col, val);
 	}
-
-	// Condition
 }

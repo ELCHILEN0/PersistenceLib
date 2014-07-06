@@ -15,10 +15,10 @@ import com.novus.persistence.queries.clauses.WhereClause;
 import com.novus.persistence.queries.expression.Condition;
 
 public class UpdateQuery<T> extends Query<T> {
-	private LinkedHashMap<String, Object>	map	= new LinkedHashMap<String, Object>();
-	protected WhereClause					where;
+	private LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+	protected WhereClause where;
 
-	private ResultSet						generatedKeys;
+	private ResultSet generatedKeys;
 
 	public UpdateQuery(Database database, Class<T> objectClass) {
 		super(database, objectClass);

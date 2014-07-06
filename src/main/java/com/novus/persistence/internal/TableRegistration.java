@@ -6,12 +6,13 @@ import java.util.List;
 import com.novus.persistence.annotations.Table;
 
 public class TableRegistration {
-	private Table						annotation	= null;
-	private Class<?>					tableClass	= null;
-	private ColumnRegistration			id			= null;
-	private List<ColumnRegistration>	columns		= new LinkedList<ColumnRegistration>();
+	private Table annotation = null;
+	private Class<?> tableClass = null;
+	private ColumnRegistration id = null;
+	private List<ColumnRegistration> columns = new LinkedList<ColumnRegistration>();
 
-	public TableRegistration(Table annotation, Class<?> tableClass, ColumnRegistration id, List<ColumnRegistration> columns) {
+	public TableRegistration(Table annotation, Class<?> tableClass, ColumnRegistration id,
+			List<ColumnRegistration> columns) {
 		this.annotation = annotation;
 		this.tableClass = tableClass;
 		this.id = id;

@@ -7,10 +7,10 @@ import com.novus.persistence.queries.expression.Expression;
  * @author Jnani
  */
 public abstract class Predicate {
-	private Expression	expression;
+	private Expression expression;
 
-	private boolean		negated	= false;
-	private Junction	junction;
+	private boolean negated = false;
+	private Junction junction;
 
 	public Predicate(Expression expression, boolean negated) {
 		this.expression = expression;
@@ -44,16 +44,15 @@ public abstract class Predicate {
 	/**
 	 * Returns whether or not the predicate is negated.
 	 * 
-	 * @return <code>true</code> if the predicate is negated; <code>false</code>
-	 *         otherwise.
+	 * @return <code>true</code> if the predicate is negated; <code>false</code> otherwise.
 	 */
 	public boolean isNegated() {
 		return negated;
 	}
 
 	/**
-	 * Returns the junction following this predicate or <code>null</code> if no
-	 * junction follows this Predicate.
+	 * Returns the junction following this predicate or <code>null</code> if no junction follows
+	 * this Predicate.
 	 * 
 	 * @return the junction
 	 */

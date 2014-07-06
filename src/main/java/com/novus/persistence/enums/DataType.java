@@ -17,27 +17,14 @@ import java.sql.Timestamp;
  * @since 1.0.0
  */
 public enum DataType {
-	CHAR(Character.class, char.class),
-	STRING(String.class),
-	BOOLEAN(Boolean.class, boolean.class),
-	NUMERIC(BigDecimal.class),
-	BYTE(Byte.class, byte.class),
-	SHORT(Short.class, short.class),
-	INTEGER(Integer.class, int.class),
-	LONG(Long.class, long.class),
-	FLOAT(Float.class, float.class),
-	DOUBLE(Double.class, double.class),
-	BINARY(Byte[].class, byte[].class),
-	DATE(Date.class),
-	TIME(Time.class),
-	TIMESTAMP(Timestamp.class),
-	CLOB(Clob.class),
-	BLOB(Blob.class),
-	ARRAY(Array.class),
-	REF(Ref.class),
-	STRUCT(Struct.class);
+	CHAR(Character.class, char.class), STRING(String.class), BOOLEAN(Boolean.class, boolean.class), NUMERIC(
+			BigDecimal.class), BYTE(Byte.class, byte.class), SHORT(Short.class, short.class), INTEGER(
+			Integer.class, int.class), LONG(Long.class, long.class), FLOAT(Float.class, float.class), DOUBLE(
+			Double.class, double.class), BINARY(Byte[].class, byte[].class), DATE(Date.class), TIME(
+			Time.class), TIMESTAMP(Timestamp.class), CLOB(Clob.class), BLOB(Blob.class), ARRAY(
+			Array.class), REF(Ref.class), STRUCT(Struct.class);
 
-	private Class<?>[]	classes;
+	private Class<?>[] classes;
 
 	private DataType(Class<?>... classes) {
 		this.classes = classes;

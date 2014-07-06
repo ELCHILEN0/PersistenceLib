@@ -4,7 +4,7 @@ import com.novus.persistence.queries.Clause;
 import com.novus.persistence.queries.expression.Predicate;
 
 public class HavingClause extends Clause {
-	private final Predicate	predicate;
+	private final Predicate predicate;
 
 	public HavingClause(Predicate predicate) {
 		this.predicate = predicate;

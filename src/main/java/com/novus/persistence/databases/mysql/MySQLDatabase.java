@@ -37,10 +37,15 @@ public class MySQLDatabase extends Database {
 			ColumnRegistration column = table.getColumns().get(i);
 
 			// Build the column parameters:
-			String type = " " + composer.getDataType(column.getLength(), DataType.getDataType(column.getType()));
+			String type =
+					" "
+							+ composer.getDataType(column.getLength(),
+									DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
-			String autoIncrement = (table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT PRIMARY KEY" : "");
+			String autoIncrement =
+					(table.getId().getName().equals(column.getName()) ? " AUTO_INCREMENT PRIMARY KEY"
+							: "");
 
 			if (i == 0) {
 				query += column.getName() + type + notNull + unique + autoIncrement;
@@ -80,7 +85,9 @@ public class MySQLDatabase extends Database {
 					if (column.getName().equals(meta.getColumnName(i))) {
 						found = true;
 
-						if (!(composer.getDataType(column.getLength(), DataType.getDataType(column.getType())).equals(meta.getColumnTypeName(i)))) {
+						if (!(composer.getDataType(column.getLength(),
+								DataType.getDataType(column.getType())).equals(meta
+								.getColumnTypeName(i)))) {
 							toChange.add(column);
 							break;
 						}
@@ -96,24 +103,34 @@ public class MySQLDatabase extends Database {
 		}
 
 		for (ColumnRegistration column : toChange) {
-			String type = " " + composer.getDataType(column.getLength(), DataType.getDataType(column.getType()));
+			String type =
+					" "
+							+ composer.getDataType(column.getLength(),
+									DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
 
-			String modify = String.format("ALTER TABLE %s MODIFY COLUMN %s" + type + notNull + unique + autoIncrement, table.getName(), column.getName());
+			String modify =
+					String.format("ALTER TABLE %s MODIFY COLUMN %s" + type + notNull + unique
+							+ autoIncrement, table.getName(), column.getName());
 			try (PreparedStatement statement = connection.prepareStatement(modify)) {
 				statement.execute();
 			}
 		}
 
 		for (ColumnRegistration column : toAdd) {
-			String type = " " + composer.getDataType(column.getLength(), DataType.getDataType(column.getType()));
+			String type =
+					" "
+							+ composer.getDataType(column.getLength(),
+									DataType.getDataType(column.getType()));
 			String notNull = column.isNullable() ? " NOT NULL" : "";
 			String unique = column.isUnique() ? " UNIQUE" : "";
 			String autoIncrement = (table.getId().equals(column) ? " AUTO_INCREMENT" : "");
 
-			String add = String.format("ALTER TABLE %s ADD COLUMN %s" + type + notNull + unique + autoIncrement, table.getName(), column.getName());
+			String add =
+					String.format("ALTER TABLE %s ADD COLUMN %s" + type + notNull + unique
+							+ autoIncrement, table.getName(), column.getName());
 
 			try (PreparedStatement statement = connection.prepareStatement(add)) {
 				statement.execute();

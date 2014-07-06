@@ -7,6 +7,7 @@ Code Style
 When contributing changes, certain requirements should be adhered to standardize the library.  PersistenceLib uses the [Google Java Code Style](http://google-styleguide.googlecode.com/svn/trunk/javaguide.html) for controlling the style of the project.  A code style profile for your preferred IDE can be downloaded from [here](https://code.google.com/p/google-styleguide/source/browse/trunk/).
 
 Some exceptions to the Google Java Code Style include:
+* With the exception of enum constants, code should not be wrapped.
 * Each time a new block or block-like construct is opened, the indent increases by four spaces. When the block ends, the indent returns to the previous indent level. The indent level applies to both code and comments throughout the block.
 * One blank paragraph line-that is a line containing only the aligned leading asterisks and a paragraph tag (* <p>)-appears between paragraphs.
 * No paragraph tag should be included before the group of "at-clauses" if present.

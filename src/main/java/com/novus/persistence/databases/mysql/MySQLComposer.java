@@ -44,12 +44,14 @@ public class MySQLComposer implements Composer {
 				builder.append("NOT ");
 			}
 
-			builder.append("(");
-
 			if (pre instanceof GroupedPredicate) {
+				builder.append("(");
+
 				GroupedPredicate predicate = (GroupedPredicate) pre;
 
 				builder.append(predicateToString(predicate.getInner()));
+				
+				builder.append(")");
 			} else if (pre instanceof BinaryPredicate) {
 				BinaryPredicate predicate = (BinaryPredicate) pre;
 
@@ -60,15 +62,14 @@ public class MySQLComposer implements Composer {
 				builder.append(predicate.getSQL());
 			}
 
-			builder.append(")");
 
 			if (pre.getJunction() != null) {
 				Junction junction = pre.getJunction();
 
 				if (junction == Junction.AND) {
-					System.out.print(" OR ");
+					builder.append(" AND ");
 				} else if (junction == Junction.OR) {
-					System.out.print(" AND ");
+					builder.append(" OR ");
 				}
 			}
 

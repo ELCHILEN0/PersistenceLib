@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -266,6 +267,10 @@ public class SelectQuery<T> extends Query<T> {
 		}
 
 		return new ArrayList<>();
+	}
+	
+	public Stream<T> stream(Connection connection) throws SQLException {
+		return findList(connection).stream();
 	}
 
 	// Getters

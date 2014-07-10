@@ -17,6 +17,7 @@ public abstract class Predicate {
 		this.negated = negated;
 
 		this.expression.getPredicates().add(this);
+		this.expression.setNegateNext(false);
 	}
 
 	/**

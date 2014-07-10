@@ -57,6 +57,15 @@ public class Expression {
 	public RawPredicate raw(String sql, Object... args) {
 		return new RawPredicate(this, negateNext, sql, args);
 	}
+	
+	/**
+	 * Set the value of whether the expression should negate the next Predicate.
+	 * 
+	 * @param	negateNext	the negateNext to set
+	 */
+	public void setNegateNext(boolean negateNext) {
+		this.negateNext = negateNext;
+	}
 
 	/**
 	 * Returns a list of all the predicates in this expression.
